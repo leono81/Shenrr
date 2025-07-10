@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentaciones - Gestor de Órdenes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="bi bi-clipboard-heart"></i> Gestor de Órdenes
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="ordenes.html">
+                    <i class="bi bi-file-earmark-medical"></i> Órdenes
+                </a>
+                <a class="nav-link" href="checkin.html">
+                    <i class="bi bi-check-circle"></i> Check-in
+                </a>
+                <a class="nav-link active" href="presentaciones.html">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Presentaciones
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1><i class="bi bi-file-earmark-spreadsheet"></i> Presentaciones</h1>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaPresentacionModal">
+                        <i class="bi bi-plus-circle"></i> Nueva Presentación
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selector de Período -->
+        <div class="row mb-4">
+            <div class="col-lg-6 mx-auto">
+                <div class="month-selector">
+                    <h5><i class="bi bi-calendar-month"></i> Generar Presentación Mensual</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">Mes</label>
+                            <select class="form-select" id="monthSelect">
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Año</label>
+                            <select class="form-select" id="yearSelect">
+                                <!-- Se llena dinámicamente -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-success" id="generateBillingButton">
+                            <i class="bi bi-calculator"></i> Generar Presentación
+                        </button>
+                        <button class="btn btn-secondary ms-2" id="previewBillingButton">
+                            <i class="bi bi-eye"></i> Vista Previa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado de la Presentación -->
+        <div class="row" id="billingResultContainer" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-text"></i> Presentación Generada
+                            <span class="badge bg-success ms-2" id="billingStatusBadge">Nueva</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>Período:</strong> <span id="billingPeriod"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Fecha de Generación:</strong> <span id="billingDate"></span>
+                            </div>
+                        </div>
+                        
+                        <div id="billingDetailsContainer">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                        
+                        <div class="export-section mt-4">
+                            <h5><i class="bi bi-download"></i> Exportar Presentación</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-grid">
+                                        <button class="btn btn-outline-success" id="exportExcelButton">
+                                            <i class="bi bi-file-earmark-excel"></i> Exportar a Excel
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-grid">
+                                        <button class="btn btn-outline-primary" id="printBillingButton">
+                                            <i class="bi bi-printer"></i> Imprimir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial de Presentaciones -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i> Historial de Presentaciones
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Período</th>
+                                        <th>Fecha Generación</th>
+                                        <th>Importe Total</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="presentationsTableBody">
+                                    <!-- Se llena dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Presentación -->
+    <div class="modal fade" id="nuevaPresentacionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Nueva Presentación Manual</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        Use esta opción para crear presentaciones con criterios específicos o corregir presentaciones anteriores.
+                    </div>
+                    <form id="manualPresentationForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Período *</label>
+                                <input type="text" class="form-control" name="periodo" placeholder="Ej: Junio 2025" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Importe Total *</label>
+                                <input type="number" class="form-control" name="importeTotal" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <label class="form-label">Estado de Cobranza</label>
+                                <select class="form-select" name="estadoCobranza">
+                                    <option value="Presentada">Presentada</option>
+                                    <option value="Aprobada">Aprobada</option>
+                                    <option value="Pagada">Pagada</option>
+                                    <option value="Rechazada">Rechazada</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="manualPresentationForm" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Crear Presentación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Actualizar Estado -->
+    <div class="modal fade" id="updateStatusModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Actualizar Estado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStatusForm">
+                        <input type="hidden" id="presentationIdToUpdate">
+                        <div class="mb-3">
+                            <label class="form-label">Estado de Cobranza</label>
+                            <select class="form-select" id="newStatusSelect">
+                                <option value="Presentada">Presentada</option>
+                                <option value="Aprobada">Aprobada</option>
+                                <option value="Pagada">Pagada</option>
+                                <option value="Rechazada">Rechazada</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmUpdateStatus">
+                        <i class="bi bi-check"></i> Actualizar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/data.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        // JavaScript específico para la página de presentaciones
+        document.addEventListener('DOMContentLoaded', function() {
+            PresentacionesPage.init();
+        });
+
+        const PresentacionesPage = {
+            currentBillingData: null,
+            currentPresentationId: null,
+
+            init: function() {
+                this.setupYearSelector();
+                this.setCurrentMonth();
+                this.setupEventListeners();
+                this.loadPresentationsHistory();
+            },
+
+            setupYearSelector: function() {
+                const yearSelect = document.getElementById('yearSelect');
+                const currentYear = new Date().getFullYear();
+                
+                // Añadir años desde 2024 hasta el año siguiente
+                for (let year = 2024; year <= currentYear + 1; year++) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    if (year === currentYear) {
+                        option.selected = true;
+                    }
+                    yearSelect.appendChild(option);
+                }
+            },
+
+            setCurrentMonth: function() {
+                const currentMonth = new Date().getMonth() + 1;
+                document.getElementById('monthSelect').value = currentMonth;
+            },
+
+            setupEventListeners: function() {
+                document.getElementById('generateBillingButton').addEventListener('click', () => {
+                    this.generateBilling(true);
+                });
+
+                document.getElementById('previewBillingButton').addEventListener('click', () => {
+                    this.generateBilling(false);
+                });
+
+                document.getElementById('exportExcelButton').addEventListener('click', () => {
+                    this.exportToExcel();
+                });
+
+                document.getElementById('printBillingButton').addEventListener('click', () => {
+                    this.printBilling();
+                });
+
+                document.getElementById('manualPresentationForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleManualPresentationSubmit(e.target);
+                });
+
+                document.getElementById('confirmUpdateStatus').addEventListener('click', () => {
+                    this.confirmUpdateStatus();
+                });
+            },
+
+            generateBilling: function(save = false) {
+                const month = parseInt(document.getElementById('monthSelect').value);
+                const year = parseInt(document.getElementById('yearSelect').value);
+                
+                if (!GestorOrdenes.utils.validatePeriod(year, month)) {
+                    GestorOrdenes.utils.showNotification('Período no válido', 'danger');
+                    return;
+                }
+
+                // Mostrar loading
+                const button = save ? document.getElementById('generateBillingButton') : document.getElementById('previewBillingButton');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Procesando...';
+                button.disabled = true;
+
+                // Simular delay para mostrar el loading
+                setTimeout(() => {
+                    try {
+                        const billingResult = GestorOrdenes.app.generateBilling(year, month);
+                        
+                        if (!billingResult) {
+                            return; // El error ya se mostró en la función
+                        }
+
+                        this.currentBillingData = billingResult;
+                        this.displayBillingResult(billingResult, save);
+                        
+                        if (save) {
+                            this.currentPresentationId = billingResult.presentacion.id;
+                            this.loadPresentationsHistory();
+                            GestorOrdenes.utils.showNotification('Presentación generada y guardada exitosamente', 'success');
+                        } else {
+                            GestorOrdenes.utils.showNotification('Vista previa generada (no guardada)', 'info');
+                        }
+
+                    } catch (error) {
+                        console.error('Error al generar presentación:', error);
+                        GestorOrdenes.utils.showNotification('Error al generar la presentación', 'danger');
+                    } finally {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }
+                }, 1000);
+            },
+
+            displayBillingResult: function(billingResult, saved) {
+                const container = document.getElementById('billingResultContainer');
+                const detailsContainer = document.getElementById('billingDetailsContainer');
+                
+                // Actualizar información general
+                document.getElementById('billingPeriod').textContent = billingResult.presentacion.periodo;
+                document.getElementById('billingDate').textContent = GestorOrdenes.utils.formatDate(billingResult.presentacion.fechaGeneracion);
+                
+                const statusBadge = document.getElementById('billingStatusBadge');
+                statusBadge.textContent = saved ? 'Guardada' : 'Vista Previa';
+                statusBadge.className = `badge ms-2 ${saved ? 'bg-success' : 'bg-warning'}`;
+
+                // Generar detalle por obra social
+                let detailsHTML = '';
+                let grandTotal = 0;
+
+                billingResult.billingData.forEach(obraSocialData => {
+                    grandTotal += obraSocialData.subtotal;
+                    
+                    detailsHTML += `
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-building"></i> ${obraSocialData.obraSocial.nombre}
+                                    <span class="badge bg-primary ms-2">
+                                        ${GestorOrdenes.utils.formatCurrency(obraSocialData.subtotal)}
+                                    </span>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm billing-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Paciente</th>
+                                                <th>Orden</th>
+                                                <th>Práctica</th>
+                                                <th>Sesiones</th>
+                                                <th>Valor Unit.</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                    `;
+
+                    obraSocialData.ordenes.forEach(ordenData => {
+                        detailsHTML += `
+                            <tr>
+                                <td>${ordenData.paciente.nombreCompleto}</td>
+                                <td>#${ordenData.orden.id}</td>
+                                <td>${ordenData.practica.nombrePractica}</td>
+                                <td>${ordenData.cantidad}</td>
+                                <td>${GestorOrdenes.utils.formatCurrency(ordenData.valorUnitario)}</td>
+                                <td><strong>${GestorOrdenes.utils.formatCurrency(ordenData.valorTotal)}</strong></td>
+                            </tr>
+                        `;
+                    });
+
+                    detailsHTML += `
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="table-group-header">
+                                                <td colspan="5"><strong>Subtotal ${obraSocialData.obraSocial.nombre}</strong></td>
+                                                <td><strong>${GestorOrdenes.utils.formatCurrency(obraSocialData.subtotal)}</strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Total general
+                detailsHTML += `
+                    <div class="card border-primary">
+                        <div class="card-body table-total text-center">
+                            <h4 class="mb-0">
+                                <i class="bi bi-currency-dollar"></i> 
+                                Total General: ${GestorOrdenes.utils.formatCurrency(grandTotal)}
+                            </h4>
+                        </div>
+                    </div>
+                `;
+
+                detailsContainer.innerHTML = detailsHTML;
+                container.style.display = 'block';
+
+                // Scroll al resultado
+                container.scrollIntoView({ behavior: 'smooth' });
+            },
+
+            exportToExcel: function() {
+                if (!this.currentBillingData) {
+                    GestorOrdenes.utils.showNotification('No hay datos para exportar', 'warning');
+                    return;
+                }
+
+                try {
+                    const workbook = XLSX.utils.book_new();
+                    
+                    // Crear hoja de resumen
+                    const summaryData = [
+                        ['PRESENTACIÓN MENSUAL'],
+                        [''],
+                        ['Período:', this.currentBillingData.presentacion.periodo],
+                        ['Fecha de Generación:', GestorOrdenes.utils.formatDate(this.currentBillingData.presentacion.fechaGeneracion)],
+                        ['Total General:', this.currentBillingData.presentacion.importeTotal],
+                        [''],
+                        ['DETALLE POR OBRA SOCIAL'],
+                        ['']
+                    ];
+
+                    // Agregar resumen por obra social
+                    summaryData.push(['Obra Social', 'Subtotal']);
+                    this.currentBillingData.billingData.forEach(os => {
+                        summaryData.push([os.obraSocial.nombre, os.subtotal]);
+                    });
+
+                    const summaryWS = XLSX.utils.aoa_to_sheet(summaryData);
+                    XLSX.utils.book_append_sheet(workbook, summaryWS, "Resumen");
+
+                    // Crear hoja detallada
+                    const detailData = [
+                        ['Paciente', 'DNI', 'Obra Social', 'Orden', 'Práctica', 'Sesiones', 'Valor Unitario', 'Total']
+                    ];
+
+                    this.currentBillingData.billingData.forEach(os => {
+                        os.ordenes.forEach(orden => {
+                            detailData.push([
+                                orden.paciente.nombreCompleto,
+                                orden.paciente.dni,
+                                os.obraSocial.nombre,
+                                orden.orden.id,
+                                orden.practica.nombrePractica,
+                                orden.cantidad,
+                                orden.valorUnitario,
+                                orden.valorTotal
+                            ]);
+                        });
+                    });
+
+                    const detailWS = XLSX.utils.aoa_to_sheet(detailData);
+                    XLSX.utils.book_append_sheet(workbook, detailWS, "Detalle");
+
+                    // Exportar archivo
+                    const filename = `Presentacion_${this.currentBillingData.presentacion.periodo.replace(' ', '_')}.xlsx`;
+                    XLSX.writeFile(workbook, filename);
+
+                    GestorOrdenes.utils.showNotification('Archivo Excel exportado exitosamente', 'success');
+
+                } catch (error) {
+                    console.error('Error al exportar Excel:', error);
+                    GestorOrdenes.utils.showNotification('Error al exportar el archivo Excel', 'danger');
+                }
+            },
+
+            printBilling: function() {
+                if (!this.currentBillingData) {
+                    GestorOrdenes.utils.showNotification('No hay datos para imprimir', 'warning');
+                    return;
+                }
+
+                const printWindow = window.open('', '_blank');
+                const printContent = this.generatePrintContent();
+                
+                printWindow.document.write(printContent);
+                printWindow.document.close();
+                printWindow.print();
+            },
+
+            generatePrintContent: function() {
+                const data = this.currentBillingData;
+                let content = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Presentación ${data.presentacion.periodo}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
+                            .header { text-align: center; margin-bottom: 30px; }
+                            .section { margin-bottom: 20px; }
+                            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                            th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+                            th { background-color: #f0f0f0; font-weight: bold; }
+                            .total { background-color: #e0e0e0; font-weight: bold; }
+                            .os-header { background-color: #d0d0d0; font-weight: bold; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>PRESENTACIÓN MENSUAL</h1>
+                            <h2>${data.presentacion.periodo}</h2>
+                            <p>Fecha de Generación: ${GestorOrdenes.utils.formatDate(data.presentacion.fechaGeneracion)}</p>
+                        </div>
+                `;
+
+                data.billingData.forEach(os => {
+                    content += `
+                        <div class="section">
+                            <h3>${os.obraSocial.nombre}</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Paciente</th>
+                                        <th>Orden</th>
+                                        <th>Práctica</th>
+                                        <th>Sesiones</th>
+                                        <th>Valor Unit.</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    os.ordenes.forEach(orden => {
+                        content += `
+                            <tr>
+                                <td>${orden.paciente.nombreCompleto}</td>
+                                <td>#${orden.orden.id}</td>
+                                <td>${orden.practica.nombrePractica}</td>
+                                <td>${orden.cantidad}</td>
+                                <td>${GestorOrdenes.utils.formatCurrency(orden.valorUnitario)}</td>
+                                <td>${GestorOrdenes.utils.formatCurrency(orden.valorTotal)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    content += `
+                                    <tr class="total">
+                                        <td colspan="5">Subtotal ${os.obraSocial.nombre}</td>
+                                        <td>${GestorOrdenes.utils.formatCurrency(os.subtotal)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                });
+
+                content += `
+                        <div class="section">
+                            <table>
+                                <tr class="total">
+                                    <td style="text-align: center; font-size: 16px;">
+                                        <strong>TOTAL GENERAL: ${GestorOrdenes.utils.formatCurrency(data.presentacion.importeTotal)}</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </body>
+                    </html>
+                `;
+
+                return content;
+            },
+
+            loadPresentationsHistory: function() {
+                const presentaciones = GestorOrdenes.storage.presentaciones.getAll();
+                const tbody = document.getElementById('presentationsTableBody');
+                
+                // Ordenar por fecha de generación (más recientes primero)
+                presentaciones.sort((a, b) => new Date(b.fechaGeneracion) - new Date(a.fechaGeneracion));
+                
+                tbody.innerHTML = '';
+                
+                if (presentaciones.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay presentaciones generadas</td></tr>';
+                    return;
+                }
+                
+                presentaciones.forEach(presentacion => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${presentacion.id}</td>
+                        <td>${presentacion.periodo}</td>
+                        <td>${GestorOrdenes.utils.formatDate(presentacion.fechaGeneracion)}</td>
+                        <td>${GestorOrdenes.utils.formatCurrency(presentacion.importeTotal)}</td>
+                        <td>
+                            <span class="badge ${this.getStatusBadgeClass(presentacion.estadoCobranza)}">
+                                ${presentacion.estadoCobranza}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-primary" onclick="PresentacionesPage.viewPresentation(${presentacion.id})" title="Ver detalle">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="PresentacionesPage.updateStatus(${presentacion.id})" title="Actualizar estado">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            },
+
+            getStatusBadgeClass: function(status) {
+                switch(status) {
+                    case 'Presentada': return 'bg-info';
+                    case 'Aprobada': return 'bg-warning';
+                    case 'Pagada': return 'bg-success';
+                    case 'Rechazada': return 'bg-danger';
+                    default: return 'bg-secondary';
+                }
+            },
+
+            handleManualPresentationSubmit: function(form) {
+                try {
+                    const formData = new FormData(form);
+                    const presentacionData = {
+                        profesional_id: 1,
+                        periodo: formData.get('periodo'),
+                        importeTotal: parseFloat(formData.get('importeTotal')),
+                        estadoCobranza: formData.get('estadoCobranza'),
+                        fechaGeneracion: GestorOrdenes.utils.getCurrentDate()
+                    };
+
+                    const success = GestorOrdenes.storage.presentaciones.save(presentacionData);
+                    if (!success) {
+                        throw new Error('Error al guardar la presentación');
+                    }
+
+                    // Cerrar modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaPresentacionModal'));
+                    modal.hide();
+                    
+                    // Limpiar formulario
+                    form.reset();
+                    
+                    // Actualizar historial
+                    this.loadPresentationsHistory();
+                    
+                    GestorOrdenes.utils.showNotification('Presentación manual creada exitosamente', 'success');
+
+                } catch (error) {
+                    console.error('Error al crear presentación manual:', error);
+                    GestorOrdenes.utils.showNotification('Error al crear la presentación manual', 'danger');
+                }
+            },
+
+            viewPresentation: function(presentationId) {
+                // Implementar vista detallada de presentación
+                GestorOrdenes.utils.showNotification('Funcionalidad de vista detallada próximamente', 'info');
+            },
+
+            updateStatus: function(presentationId) {
+                const presentacion = GestorOrdenes.storage.presentaciones.getById(presentationId);
+                if (!presentacion) return;
+
+                document.getElementById('presentationIdToUpdate').value = presentationId;
+                document.getElementById('newStatusSelect').value = presentacion.estadoCobranza;
+
+                const modal = new bootstrap.Modal(document.getElementById('updateStatusModal'));
+                modal.show();
+            },
+
+            confirmUpdateStatus: function() {
+                const presentationId = parseInt(document.getElementById('presentationIdToUpdate').value);
+                const newStatus = document.getElementById('newStatusSelect').value;
+
+                const presentacion = GestorOrdenes.storage.presentaciones.getById(presentationId);
+                if (presentacion) {
+                    presentacion.estadoCobranza = newStatus;
+                    GestorOrdenes.storage.presentaciones.save(presentacion);
+
+                    // Cerrar modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('updateStatusModal'));
+                    modal.hide();
+
+                    // Actualizar historial
+                    this.loadPresentationsHistory();
+
+                    GestorOrdenes.utils.showNotification('Estado actualizado exitosamente', 'success');
+                }
+            }
+        };
+    </script>
+</body>
+</html>

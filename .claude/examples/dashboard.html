@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MediTrack Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --background: #f8fafc;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #0f172a;
+      --popover: #ffffff;
+      --popover-foreground: #0f172a;
+      --primary: #0c7ff2;
+      --primary-foreground: #f8fafc;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #0f172a;
+      --muted: #f1f5f9;
+      --muted-foreground: #64748b;
+      --accent: #f1f5f9;
+      --accent-foreground: #0f172a;
+      --destructive: #ef4444;
+      --destructive-foreground: #f8fafc;
+      --border: #e2e8f0;
+      --input: #e2e8f0;
+      --ring: #0c7ff2;
+      --radius: 0.75rem;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+<div class="flex flex-col h-full">
+<header class="flex items-center justify-between whitespace-nowrap border-b bg-white px-6 py-4">
+<div class="flex items-center gap-3 text-xl font-bold text-slate-800">
+<div class="flex size-8 items-center justify-center rounded-lg bg-blue-500 text-white">
+<span class="material-symbols-outlined">
+            health_and_safety
+          </span>
+</div>
+<h1>MediTrack</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
+<img alt="Avatar Dr. Sofia Ramirez" class="size-10 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7ZvPurSm-k519Y96ifpLP-MUrd2F0Qydak7CaRJgMTs2_H4oj9vHlqvyMD1e-jR7TKJlxfxRisi_Rl-SvKgHB0hgKchYpKZ8Y5OzA6QkVldnsQTx52hWaoBQITu1zynhQ3yp2rgQOJYo3fH7sXYf8yaux3kjESTXAwTrNW0cERaucgGJ05ez2S70aH4bORuAN6Ey6bBYJ96gcpx4flOPflCUOMa9AOrdFhuaYmKF6fGwchgOcSP7Tjl5sZro2TCsmyNuECH8-hGw"/>
+<span class="font-medium text-slate-700">Dr. Sofía Ramírez</span>
+</div>
+</div>
+</header>
+<main class="flex-1 bg-slate-50 p-6 lg:p-10">
+<div class="mx-auto max-w-7xl">
+<div class="mb-8 flex justify-center">
+<div class="relative w-full max-w-2xl">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+              search
+            </span>
+<input class="w-full rounded-full border-slate-300 bg-white py-4 pl-12 pr-4 text-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Buscar paciente por DNI" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+<div class="flex items-start gap-4 rounded-xl border bg-white p-6 shadow-sm">
+<div class="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-blue-500">
+<span class="material-symbols-outlined text-3xl">
+                description
+              </span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-500">Órdenes Activas</p>
+<p class="text-3xl font-bold text-slate-800">23</p>
+</div>
+</div>
+<div class="flex items-start gap-4 rounded-xl border bg-white p-6 shadow-sm">
+<div class="flex size-12 items-center justify-center rounded-lg bg-green-100 text-green-500">
+<span class="material-symbols-outlined text-3xl">
+                calendar_today
+              </span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-500">Sesiones de Hoy</p>
+<p class="text-3xl font-bold text-slate-800">8</p>
+</div>
+</div>
+<div class="flex items-start gap-4 rounded-xl border bg-white p-6 shadow-sm">
+<div class="flex size-12 items-center justify-center rounded-lg bg-yellow-100 text-yellow-500">
+<span class="material-symbols-outlined text-3xl">
+                pending_actions
+              </span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-500">Pendientes de Presentar</p>
+<p class="text-3xl font-bold text-slate-800">5</p>
+</div>
+</div>
+<div class="flex items-start gap-4 rounded-xl border bg-white p-6 shadow-sm">
+<div class="flex size-12 items-center justify-center rounded-lg bg-purple-100 text-purple-500">
+<span class="material-symbols-outlined text-3xl">
+                attach_money
+              </span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-500">Presentado este Mes</p>
+<p class="text-3xl font-bold text-slate-800">$1,250</p>
+</div>
+</div>
+</div>
+<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+<button class="flex items-center justify-center gap-2 rounded-lg bg-blue-500 px-5 py-4 text-base font-bold text-white shadow-sm transition-colors hover:bg-blue-600">
+<span class="material-symbols-outlined">add</span>
+<span>Nueva Orden</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-lg bg-green-500 px-5 py-4 text-base font-bold text-white shadow-sm transition-colors hover:bg-green-600">
+<span class="material-symbols-outlined">check_circle</span>
+<span>Check-in Diario</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-lg bg-orange-500 px-5 py-4 text-base font-bold text-white shadow-sm transition-colors hover:bg-orange-600">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Generar Presentación</span>
+</button>
+</div>
+<div class="overflow-hidden rounded-xl border bg-white shadow-sm">
+<div class="px-6 py-4">
+<h2 class="text-lg font-semibold text-slate-800">Actividad Reciente</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-50">
+<tr>
+<th class="px-6 py-3 text-sm font-medium text-slate-600">Paciente</th>
+<th class="px-6 py-3 text-sm font-medium text-slate-600">Fecha</th>
+<th class="px-6 py-3 text-sm font-medium text-slate-600">Servicio</th>
+<th class="px-6 py-3 text-sm font-medium text-slate-600 text-center">Estado</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200">
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-slate-800 font-medium">Carlos Mendoza</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">2024-07-26</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">Consulta General</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Completado</span>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-slate-800 font-medium">Ana Torres</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">2024-07-25</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">Terapia Física</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">En Progreso</span>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-slate-800 font-medium">Luis Pérez</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">2024-07-24</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">Vacunación</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Completado</span>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-slate-800 font-medium">María García</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">2024-07-23</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">Análisis de Sangre</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">Pendiente</span>
+</td>
+</tr>
+<tr>
+<td class="px-6 py-4 whitespace-nowrap text-slate-800 font-medium">Jorge Sánchez</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">2024-07-22</td>
+<td class="px-6 py-4 whitespace-nowrap text-slate-500">Radiografía</td>
+<td class="px-6 py-4 whitespace-nowrap text-center">
+<span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Completado</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

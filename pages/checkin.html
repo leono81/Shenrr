@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in Diario - Gestor de Órdenes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="bi bi-clipboard-heart"></i> Gestor de Órdenes
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="ordenes.html">
+                    <i class="bi bi-file-earmark-medical"></i> Órdenes
+                </a>
+                <a class="nav-link active" href="checkin.html">
+                    <i class="bi bi-check-circle"></i> Check-in
+                </a>
+                <a class="nav-link" href="presentaciones.html">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Presentaciones
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1><i class="bi bi-check-circle"></i> Check-in Diario</h1>
+                    <div class="badge bg-info fs-6">
+                        <i class="bi bi-calendar"></i> 
+                        <span id="currentDate"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Búsqueda Principal -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-primary shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-search"></i> Búsqueda de Paciente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-person-badge"></i>
+                                    </span>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="dniSearchInput" 
+                                           placeholder="Ingrese DNI del paciente (ej: 12345678)"
+                                           maxlength="8">
+                                    <button class="btn btn-primary" type="button" id="searchButton">
+                                        <i class="bi bi-search"></i> Buscar
+                                    </button>
+                                </div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle"></i> 
+                                    Ingrese el DNI sin puntos ni espacios
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-grid">
+                                    <button class="btn btn-outline-secondary btn-lg" id="clearSearchButton">
+                                        <i class="bi bi-x-circle"></i> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado de Búsqueda -->
+        <div class="row">
+            <div class="col-12">
+                <div id="searchResultContainer">
+                    <!-- Estado inicial -->
+                    <div class="empty-state" id="initialState">
+                        <i class="bi bi-search"></i>
+                        <h4>Busque un paciente por DNI</h4>
+                        <p class="text-muted">Ingrese el DNI del paciente para ver sus órdenes activas y registrar la sesión de hoy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sesiones de Hoy -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i> Sesiones Registradas Hoy
+                            <span class="badge bg-success ms-2" id="todaySessionsCount">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Hora</th>
+                                        <th>Paciente</th>
+                                        <th>DNI</th>
+                                        <th>Práctica</th>
+                                        <th>Sesión</th>
+                                        <th>Obra Social</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="todaySessionsTableBody">
+                                    <!-- Se llena dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div class="modal fade" id="confirmSessionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-check-circle-fill text-success"></i> Sesión Registrada
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div class="success-message mb-3">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                            <div id="sessionConfirmationMessage" class="mt-2">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                        <div id="sessionDetails" class="mt-3">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        <i class="bi bi-check"></i> Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Marcar Ausente -->
+    <div class="modal fade" id="markAbsentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-x-circle text-warning"></i> Marcar Ausente
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro que desea marcar esta sesión como ausente?</p>
+                    <div id="absentSessionDetails" class="alert alert-warning">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i> 
+                        Esta acción marcará la próxima sesión pendiente como ausente.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" id="confirmAbsentButton">
+                        <i class="bi bi-x-circle"></i> Marcar Ausente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/data.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        // JavaScript específico para la página de check-in
+        document.addEventListener('DOMContentLoaded', function() {
+            CheckinPage.init();
+        });
+
+        const CheckinPage = {
+            selectedOrderId: null,
+
+            init: function() {
+                this.setCurrentDate();
+                this.setupEventListeners();
+                this.loadTodaySessions();
+            },
+
+            setCurrentDate: function() {
+                const today = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                };
+                document.getElementById('currentDate').textContent = 
+                    today.toLocaleDateString('es-AR', options);
+            },
+
+            setupEventListeners: function() {
+                const dniInput = document.getElementById('dniSearchInput');
+                const searchButton = document.getElementById('searchButton');
+                const clearButton = document.getElementById('clearSearchButton');
+
+                // Búsqueda por click
+                searchButton.addEventListener('click', () => {
+                    this.performSearch();
+                });
+
+                // Búsqueda por Enter
+                dniInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.performSearch();
+                    }
+                });
+
+                // Solo números en DNI
+                dniInput.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+
+                // Limpiar búsqueda
+                clearButton.addEventListener('click', () => {
+                    this.clearSearch();
+                });
+
+                // Confirmar ausente
+                document.getElementById('confirmAbsentButton').addEventListener('click', () => {
+                    this.confirmAbsent();
+                });
+            },
+
+            performSearch: function() {
+                const dni = document.getElementById('dniSearchInput').value.trim();
+                
+                if (!dni) {
+                    this.showError('Ingrese un DNI para buscar');
+                    return;
+                }
+
+                if (!GestorOrdenes.utils.validateDni(dni)) {
+                    this.showError('El DNI ingresado no es válido (debe tener 7-8 dígitos)');
+                    return;
+                }
+
+                const paciente = GestorOrdenes.app.searchPatientByDni(dni);
+                
+                if (!paciente) {
+                    this.showPatientNotFound(dni);
+                    return;
+                }
+
+                const ordenesActivas = GestorOrdenes.app.getActiveOrdersForPatient(paciente.id);
+                
+                if (ordenesActivas.length === 0) {
+                    this.showNoActiveOrders(paciente);
+                    return;
+                }
+
+                this.showActiveOrders(paciente, ordenesActivas);
+            },
+
+            clearSearch: function() {
+                document.getElementById('dniSearchInput').value = '';
+                document.getElementById('searchResultContainer').innerHTML = `
+                    <div class="empty-state" id="initialState">
+                        <i class="bi bi-search"></i>
+                        <h4>Busque un paciente por DNI</h4>
+                        <p class="text-muted">Ingrese el DNI del paciente para ver sus órdenes activas y registrar la sesión de hoy.</p>
+                    </div>
+                `;
+            },
+
+            showError: function(message) {
+                document.getElementById('searchResultContainer').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i> ${message}
+                    </div>
+                `;
+            },
+
+            showPatientNotFound: function(dni) {
+                document.getElementById('searchResultContainer').innerHTML = `
+                    <div class="card border-warning">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-x" style="font-size: 3rem; color: #ffc107;"></i>
+                            <h4 class="mt-3">Paciente no encontrado</h4>
+                            <p class="text-muted">No se encontró ningún paciente con DNI: <strong>${dni}</strong></p>
+                            <div class="mt-3">
+                                <a href="ordenes.html" class="btn btn-primary">
+                                    <i class="bi bi-person-plus"></i> Registrar Nuevo Paciente
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            showNoActiveOrders: function(paciente) {
+                document.getElementById('searchResultContainer').innerHTML = `
+                    <div class="card border-info">
+                        <div class="card-body text-center">
+                            <i class="bi bi-file-earmark-x" style="font-size: 3rem; color: #0dcaf0;"></i>
+                            <h4 class="mt-3">Sin órdenes activas</h4>
+                            <p class="text-muted">
+                                El paciente <strong>${paciente.nombreCompleto}</strong> no tiene órdenes activas
+                            </p>
+                            <div class="patient-info mt-3 mb-3">
+                                <div class="patient-name">${paciente.nombreCompleto}</div>
+                                <div class="patient-dni">DNI: ${paciente.dni}</div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="ordenes.html" class="btn btn-primary">
+                                    <i class="bi bi-file-earmark-plus"></i> Crear Nueva Orden
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            showActiveOrders: function(paciente, ordenes) {
+                const obraSocial = GestorOrdenes.storage.obrasSociales.getById(paciente.obraSocial_id);
+                
+                let html = `
+                    <div class="card border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person-check"></i> Paciente Encontrado
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="patient-info mb-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="patient-name">${paciente.nombreCompleto}</div>
+                                        <div class="patient-dni">DNI: ${paciente.dni}</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div><strong>Obra Social:</strong> ${obraSocial ? obraSocial.nombre : 'N/A'}</div>
+                                        <div><strong>Nº Afiliado:</strong> ${paciente.numeroAfiliado || 'N/A'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h6><i class="bi bi-file-earmark-medical"></i> Órdenes Activas</h6>
+                `;
+
+                ordenes.forEach(orden => {
+                    const practica = GestorOrdenes.storage.practicas.getById(orden.practica_id);
+                    const progreso = GestorOrdenes.utils.getSessionProgress(orden.id);
+                    const sesiones = GestorOrdenes.storage.sesiones.getByOrden(orden.id);
+                    const pendientes = sesiones.filter(s => s.estado === 'Pendiente');
+                    
+                    html += `
+                        <div class="order-card mb-3">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <div>
+                                        <strong>${practica ? practica.nombrePractica : 'N/A'}</strong>
+                                        <small class="text-muted d-block">Orden #${orden.id}</small>
+                                    </div>
+                                    <div class="order-progress mt-2">
+                                        <div class="progress" style="height: 15px;">
+                                            <div class="progress-bar" role="progressbar" style="width: ${progreso.porcentaje}%">
+                                                ${progreso.realizadas}/${progreso.total}
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            ${progreso.pendientes} sesiones pendientes
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        ${pendientes.length > 0 ? `
+                                            <button class="btn btn-success" onclick="CheckinPage.registerSession(${orden.id})">
+                                                <i class="bi bi-check-circle"></i> Sesión de Hoy
+                                            </button>
+                                            <button class="btn btn-warning" onclick="CheckinPage.markAbsent(${orden.id})">
+                                                <i class="bi bi-x-circle"></i> Ausente
+                                            </button>
+                                        ` : `
+                                            <span class="badge bg-info">Orden Completada</span>
+                                        `}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('searchResultContainer').innerHTML = html;
+            },
+
+            registerSession: function(ordenId) {
+                const success = GestorOrdenes.app.registerTodaySession(ordenId);
+                
+                if (success) {
+                    this.showSessionConfirmation(ordenId);
+                    this.loadTodaySessions();
+                    
+                    // Actualizar la vista de órdenes activas
+                    const dni = document.getElementById('dniSearchInput').value;
+                    if (dni) {
+                        setTimeout(() => this.performSearch(), 1000);
+                    }
+                }
+            },
+
+            markAbsent: function(ordenId) {
+                this.selectedOrderId = ordenId;
+                
+                const orden = GestorOrdenes.storage.ordenes.getById(ordenId);
+                const paciente = GestorOrdenes.storage.pacientes.getById(orden.paciente_id);
+                const practica = GestorOrdenes.storage.practicas.getById(orden.practica_id);
+                const sesiones = GestorOrdenes.storage.sesiones.getByOrden(ordenId);
+                const pendientes = sesiones.filter(s => s.estado === 'Pendiente');
+                
+                document.getElementById('absentSessionDetails').innerHTML = `
+                    <strong>Paciente:</strong> ${paciente.nombreCompleto}<br>
+                    <strong>Práctica:</strong> ${practica.nombrePractica}<br>
+                    <strong>Sesión:</strong> ${pendientes[0].numeroSesion} de ${orden.cantidadSesionesTotal}
+                `;
+                
+                const modal = new bootstrap.Modal(document.getElementById('markAbsentModal'));
+                modal.show();
+            },
+
+            confirmAbsent: function() {
+                if (!this.selectedOrderId) return;
+                
+                try {
+                    const sesiones = GestorOrdenes.storage.sesiones.getByOrden(this.selectedOrderId);
+                    const pendientes = sesiones.filter(s => s.estado === 'Pendiente');
+                    
+                    if (pendientes.length === 0) {
+                        GestorOrdenes.utils.showNotification('No hay sesiones pendientes', 'warning');
+                        return;
+                    }
+                    
+                    const sesion = pendientes[0];
+                    sesion.fechaPrestacion = GestorOrdenes.utils.getCurrentDate();
+                    sesion.estado = 'Ausente';
+                    
+                    const success = GestorOrdenes.storage.sesiones.save(sesion);
+                    if (success) {
+                        GestorOrdenes.utils.showNotification('Sesión marcada como ausente', 'warning');
+                        
+                        // Cerrar modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('markAbsentModal'));
+                        modal.hide();
+                        
+                        // Actualizar vistas
+                        this.loadTodaySessions();
+                        setTimeout(() => this.performSearch(), 500);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error al marcar ausente:', error);
+                    GestorOrdenes.utils.showNotification('Error al marcar la sesión como ausente', 'danger');
+                }
+            },
+
+            showSessionConfirmation: function(ordenId) {
+                const orden = GestorOrdenes.storage.ordenes.getById(ordenId);
+                const paciente = GestorOrdenes.storage.pacientes.getById(orden.paciente_id);
+                const practica = GestorOrdenes.storage.practicas.getById(orden.practica_id);
+                const progreso = GestorOrdenes.utils.getSessionProgress(ordenId);
+                
+                document.getElementById('sessionConfirmationMessage').innerHTML = `
+                    <h5 class="text-success">¡Sesión registrada exitosamente!</h5>
+                `;
+                
+                document.getElementById('sessionDetails').innerHTML = `
+                    <div class="row text-start">
+                        <div class="col-6"><strong>Paciente:</strong></div>
+                        <div class="col-6">${paciente.nombreCompleto}</div>
+                        <div class="col-6"><strong>Práctica:</strong></div>
+                        <div class="col-6">${practica.nombrePractica}</div>
+                        <div class="col-6"><strong>Progreso:</strong></div>
+                        <div class="col-6">${progreso.realizadas}/${progreso.total} sesiones</div>
+                        <div class="col-6"><strong>Fecha:</strong></div>
+                        <div class="col-6">${GestorOrdenes.utils.formatDate(GestorOrdenes.utils.getCurrentDate())}</div>
+                    </div>
+                `;
+                
+                const modal = new bootstrap.Modal(document.getElementById('confirmSessionModal'));
+                modal.show();
+            },
+
+            loadTodaySessions: function() {
+                const today = GestorOrdenes.utils.getCurrentDate();
+                const allSessions = GestorOrdenes.storage.sesiones.getAll();
+                
+                const todaySessions = allSessions.filter(session => 
+                    session.fechaPrestacion === today && 
+                    (session.estado === 'Realizada' || session.estado === 'Ausente')
+                );
+                
+                // Ordenar por hora (simulada por ID)
+                todaySessions.sort((a, b) => b.id - a.id);
+                
+                const tbody = document.getElementById('todaySessionsTableBody');
+                const countBadge = document.getElementById('todaySessionsCount');
+                
+                countBadge.textContent = todaySessions.length;
+                tbody.innerHTML = '';
+                
+                if (todaySessions.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                No hay sesiones registradas hoy
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                todaySessions.forEach(session => {
+                    const orden = GestorOrdenes.storage.ordenes.getById(session.orden_id);
+                    const paciente = GestorOrdenes.storage.pacientes.getById(orden.paciente_id);
+                    const practica = GestorOrdenes.storage.practicas.getById(orden.practica_id);
+                    const obraSocial = GestorOrdenes.storage.obrasSociales.getById(orden.obraSocial_id);
+                    
+                    // Simular hora basada en el ID de la sesión
+                    const hour = 8 + (session.id % 10);
+                    const minute = (session.id * 7) % 60;
+                    const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${timeStr}</td>
+                        <td>${paciente ? paciente.nombreCompleto : 'N/A'}</td>
+                        <td>${paciente ? paciente.dni : 'N/A'}</td>
+                        <td>${practica ? practica.nombrePractica : 'N/A'}</td>
+                        <td>${session.numeroSesion}/${orden.cantidadSesionesTotal}</td>
+                        <td>${obraSocial ? obraSocial.nombre : 'N/A'}</td>
+                        <td>
+                            <span class="badge estado-${session.estado.toLowerCase()}">
+                                ${session.estado}
+                            </span>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            }
+        };
+    </script>
+</body>
+</html>

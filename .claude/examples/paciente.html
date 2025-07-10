@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stitch Design</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-color: #0c7ff2;
+        --secondary-color: #64748b;
+        --background-color: #f8fafc;
+        --card-background-color: #ffffff;
+        --text-primary-color: #0f172a;
+        --text-secondary-color: #475569;
+        --success-color: #16a34a;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--background-color);
+      }
+      .nav-link {
+        @apply text-sm font-medium text-slate-700 hover:text-[var(--primary-color)] transition-colors duration-200;
+      }
+      .card {
+        @apply bg-[var(--card-background-color)] border border-slate-200 rounded-xl shadow-sm;
+      }
+    </style>
+</head>
+<body>
+<div class="flex min-h-screen flex-col bg-[var(--background-color)]">
+<header class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur-lg sm:px-6 lg:px-8">
+<div class="flex items-center gap-3">
+<div class="text-2xl text-[var(--primary-color)]">
+<svg class="lucide lucide-activity" fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+</svg>
+</div>
+<h1 class="text-lg font-bold text-[var(--text-primary-color)]">MediTrack</h1>
+</div>
+<nav class="hidden items-center gap-6 md:flex">
+<a class="nav-link text-[var(--primary-color)] font-semibold" href="#">Inicio</a>
+<a class="nav-link" href="#">Pacientes</a>
+<a class="nav-link" href="#">Agenda</a>
+<a class="nav-link" href="#">Facturación</a>
+<a class="nav-link" href="#">Reportes</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700">
+<span class="material-symbols-outlined"> notifications </span>
+</button>
+<div class="h-10 w-10 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC2P4wc1yEm7MJ4tBQoLdglD5ElKu6DxMiv24pk0c5gDgM39uCwlCmXKF9R8BOsMe3EZXbnHkkdOfLRQOfgvezcOgFMzONz5r6WUcMx4CHAPqyJFnIPauQ9_QSk4Sexc-XLSRykhvaUFE6unAgqD3ApuGqNw5RXfuivfFdckO3YWfeZJ-5AkPkyivIFw3KvJN5qXmHKwb1C9Q9awVQe5Gd0PXNsKkEbaw9mFOhIziqd85IkavBhdXAtlwDIkNVh8ElmXeb1n1Pp-s0");'></div>
+</div>
+</header>
+<main class="flex-grow px-4 py-8 sm:px-6 lg:px-8">
+<div class="mx-auto max-w-4xl">
+<div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+<div class="flex items-center gap-4">
+<div class="h-20 w-20 flex-shrink-0 rounded-full bg-cover bg-center shadow-md" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB9aDVfSDoMHB59jc4kcPja_BHCip_8FJ2wQ6n61f5TayY-ZK1C18jSIz8B3Qrz99UfpQt9b5ux63c6L0NTPQxp_mgWEuFOt1vRpNPp7CzggiOLVH0kw8S8UoErTD_xRLYIUPVGLcRmP95kqQw-5-RW765QsmPbfJx9gE-aX8bZFeETKIaDWs8oFcH_UDZlYxxL1DtYbZxNvkkkeJ3R-3seR9QQbTeIrBFfel-Kcn7PmQsR4R4ppUI7IY91ckcP_ad1hPHGbdzU8eE");'></div>
+<div>
+<h2 class="text-2xl font-bold text-[var(--text-primary-color)]">Sofia Ramirez</h2>
+<p class="text-base text-[var(--text-secondary-color)]">DNI: 34.567.890</p>
+</div>
+</div>
+<div>
+<p class="text-sm text-slate-500">
+                Check-in para: <span class="font-medium text-slate-700">15 de Agosto, 2024</span>
+</p>
+</div>
+</div>
+<h3 class="mb-4 text-xl font-bold text-[var(--text-primary-color)]">Órdenes Activas</h3>
+<div class="space-y-6">
+<div class="card p-6">
+<div class="flex flex-col gap-6 md:flex-row md:items-center">
+<div class="flex flex-1 flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 flex-shrink-0 rounded-lg bg-contain bg-center bg-no-repeat" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDkV-VdqBFkN1vJkpYHVuRa0ZQaImAhmg-V58-Y8SYjIYAyszQWBbFc8gvRVJgVK72CIRmDNIJ2Ewoxv4VOtLQu-YBxhcRTfiVeNew8nTQYSNVD8ajY70Noqjc1WacuCpinQazmyqTOqpICTvQmIxF_tSZRQim4WhO6IaR2CA6K78XZaAYNIHR2NMAeNrgZ0rChDjNsUuagSLzQkSnp85bPAcPVHcWGMPtiwbiHlF56Ebq3hWG1rZz779Wuf5ztW4w7hVxuViAAvig");'></div>
+<div>
+<p class="text-sm font-medium text-[var(--text-secondary-color)]">SaludTotal</p>
+<p class="text-lg font-semibold text-[var(--text-primary-color)]">Fisioterapia</p>
+</div>
+</div>
+<div>
+<div class="mb-1 flex justify-between text-sm">
+<span class="font-medium text-[var(--text-secondary-color)]">4 de 10 sesiones</span>
+<span class="font-medium text-slate-500">40%</span>
+</div>
+<div class="h-2 w-full rounded-full bg-slate-200">
+<div class="h-2 rounded-full bg-[var(--primary-color)]" style="width: 40%"></div>
+</div>
+</div>
+<p class="text-sm text-[var(--text-secondary-color)]">Vigencia: 01/08/2024 - 31/12/2024</p>
+</div>
+<div class="w-full md:w-auto">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--success-color)] px-6 py-3 text-base font-semibold text-white shadow-sm transition-transform duration-200 hover:scale-105 active:scale-100">
+<span class="material-symbols-outlined"> check_circle </span>
+<span>Registrar Sesión de Hoy</span>
+</button>
+</div>
+</div>
+</div>
+<div class="card p-6">
+<div class="flex flex-col gap-6 md:flex-row md:items-center">
+<div class="flex flex-1 flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 flex-shrink-0 rounded-lg bg-contain bg-center bg-no-repeat" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD06lCL5MAaIbIPgyw18GSM9xJj_mnF14q2WsSIgoDGac8WQOaopARWQzC_HirEz_QF0zNd3fZlKrrfdEJ6UWxobmIhj0PW-u-DR39vac8usIIjeYPEIa5h95yjs-NOqQ6cqRs6i6S_a96IbNRUTOpD92kQGF1rfnuWZdiu-B-E6Hz9gU9LLzGS9WmFOayDLcCo5QxX0nHT7eLjx_YBN6MyXKWFYGJRsD4-730KmDWbj7UcMxen2C3CiXKU6QIg_Jt09UmpaON5UJU");'></div>
+<div>
+<p class="text-sm font-medium text-[var(--text-secondary-color)]">BienestarSeguro</p>
+<p class="text-lg font-semibold text-[var(--text-primary-color)]">Rehabilitación</p>
+</div>
+</div>
+<div>
+<div class="mb-1 flex justify-between text-sm">
+<span class="font-medium text-[var(--text-secondary-color)]">7 de 10 sesiones</span>
+<span class="font-medium text-slate-500">70%</span>
+</div>
+<div class="h-2 w-full rounded-full bg-slate-200">
+<div class="h-2 rounded-full bg-[var(--primary-color)]" style="width: 70%"></div>
+</div>
+</div>
+<p class="text-sm text-[var(--text-secondary-color)]">Vigencia: 15/07/2024 - 15/11/2024</p>
+</div>
+<div class="w-full md:w-auto">
+<div class="flex items-center justify-center gap-2 rounded-lg bg-green-50 px-6 py-3 text-base font-semibold text-[var(--success-color)]">
+<span class="material-symbols-outlined"> verified </span>
+<span>Sesión registrada hoy a las 10:30</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

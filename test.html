@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test POC - Gestor de Órdenes</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .test-section { margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background-color: #0056b3; }
+        .log { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 10px; border-radius: 4px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test POC - Gestor de Órdenes</h1>
+        
+        <div class="test-section info">
+            <h3>📊 Estado del Sistema</h3>
+            <p><strong>Status:</strong> <span id="systemStatus">Cargando...</span></p>
+            <p><strong>Módulos:</strong> <span id="modulesStatus">Verificando...</span></p>
+            <p><strong>Datos:</strong> <span id="dataStatus">Verificando...</span></p>
+        </div>
+
+        <div class="test-section">
+            <h3>🎮 Pruebas Automáticas</h3>
+            <button onclick="runAllTests()">Ejecutar Todas las Pruebas</button>
+            <button onclick="resetData()">Resetear Datos</button>
+            <button onclick="clearLog()">Limpiar Log</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Pruebas Manuales Rápidas</h3>
+            <button onclick="testSearch()">Buscar Paciente DNI: 12345678</button>
+            <button onclick="testCreateOrder()">Crear Orden de Prueba</button>
+            <button onclick="testRegisterSession()">Registrar Sesión</button>
+            <button onclick="testGenerateBilling()">Generar Presentación</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📈 Estadísticas</h3>
+            <div id="stats"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Log de Pruebas</h3>
+            <div id="testLog" class="log"></div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('testLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'blue';
+            logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '';
+        }
+
+        function checkSystemStatus() {
+            try {
+                // Verificar módulos
+                const modules = ['storage', 'data', 'utils', 'app'];
+                const loadedModules = modules.filter(mod => GestorOrdenes[mod]);
+                
+                document.getElementById('systemStatus').textContent = 
+                    GestorOrdenes ? 'Activo ✅' : 'Error ❌';
+                
+                document.getElementById('modulesStatus').textContent = 
+                    `${loadedModules.length}/${modules.length} cargados`;
+                
+                // Verificar datos
+                const pacientes = GestorOrdenes.storage.pacientes.getAll();
+                const ordenes = GestorOrdenes.storage.ordenes.getAll();
+                const sesiones = GestorOrdenes.storage.sesiones.getAll();
+                
+                document.getElementById('dataStatus').textContent = 
+                    `${pacientes.length} pacientes, ${ordenes.length} órdenes, ${sesiones.length} sesiones`;
+                
+                updateStats();
+                log('Sistema verificado correctamente', 'success');
+                
+            } catch (error) {
+                log('Error al verificar sistema: ' + error.message, 'error');
+            }
+        }
+
+        function updateStats() {
+            const stats = GestorOrdenes.utils.getGeneralStats();
+            document.getElementById('stats').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div><strong>Órdenes Activas:</strong> ${stats.ordenesActivas}</div>
+                    <div><strong>Sesiones Realizadas:</strong> ${stats.sesionesRealizadas}</div>
+                    <div><strong>Sesiones Pendientes:</strong> ${stats.sesionesPendientes}</div>
+                    <div><strong>Presentaciones:</strong> ${stats.presentaciones}</div>
+                </div>
+            `;
+        }
+
+        function testSearch() {
+            try {
+                const paciente = GestorOrdenes.app.searchPatientByDni('12345678');
+                if (paciente) {
+                    log(`✅ Paciente encontrado: ${paciente.nombreCompleto}`, 'success');
+                    const ordenes = GestorOrdenes.app.getActiveOrdersForPatient(paciente.id);
+                    log(`📋 Órdenes activas: ${ordenes.length}`, 'info');
+                } else {
+                    log('❌ Paciente no encontrado', 'error');
+                }
+            } catch (error) {
+                log('Error en búsqueda: ' + error.message, 'error');
+            }
+        }
+
+        function testCreateOrder() {
+            try {
+                const ordenData = {
+                    profesional_id: 1,
+                    paciente_id: 1,
+                    obraSocial_id: 1,
+                    medicoDerivante_id: 1,
+                    practica_id: 1,
+                    fechaEmision: GestorOrdenes.utils.getCurrentDate(),
+                    cantidadSesionesTotal: 5,
+                    estado: 'Abierta',
+                    fechaCierre: null
+                };
+
+                const success = GestorOrdenes.storage.ordenes.save(ordenData);
+                if (success) {
+                    GestorOrdenes.app.createSessionsForOrder(ordenData);
+                    log(`✅ Orden creada: ID ${ordenData.id}`, 'success');
+                    updateStats();
+                } else {
+                    log('❌ Error al crear orden', 'error');
+                }
+            } catch (error) {
+                log('Error al crear orden: ' + error.message, 'error');
+            }
+        }
+
+        function testRegisterSession() {
+            try {
+                const ordenes = GestorOrdenes.storage.ordenes.getActivas();
+                if (ordenes.length > 0) {
+                    const success = GestorOrdenes.app.registerTodaySession(ordenes[0].id);
+                    if (success) {
+                        log('✅ Sesión registrada exitosamente', 'success');
+                        updateStats();
+                    } else {
+                        log('❌ Error al registrar sesión', 'error');
+                    }
+                } else {
+                    log('❌ No hay órdenes activas', 'error');
+                }
+            } catch (error) {
+                log('Error al registrar sesión: ' + error.message, 'error');
+            }
+        }
+
+        function testGenerateBilling() {
+            try {
+                const currentDate = new Date();
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth() + 1;
+                
+                const billingResult = GestorOrdenes.app.generateBilling(year, month);
+                if (billingResult) {
+                    log(`✅ Presentación generada: ${billingResult.billingData.length} obra(s) social(es)`, 'success');
+                    log(`💰 Total: $${billingResult.presentacion.importeTotal}`, 'info');
+                    updateStats();
+                } else {
+                    log('❌ No hay datos para presentar', 'error');
+                }
+            } catch (error) {
+                log('Error al generar presentación: ' + error.message, 'error');
+            }
+        }
+
+        function resetData() {
+            try {
+                GestorOrdenes.data.reset();
+                log('✅ Datos reseteados correctamente', 'success');
+                updateStats();
+            } catch (error) {
+                log('Error al resetear datos: ' + error.message, 'error');
+            }
+        }
+
+        function runAllTests() {
+            log('🚀 Iniciando suite de pruebas...', 'info');
+            clearLog();
+            
+            setTimeout(() => {
+                log('1/4 Probando búsqueda...', 'info');
+                testSearch();
+            }, 500);
+            
+            setTimeout(() => {
+                log('2/4 Probando creación de orden...', 'info');
+                testCreateOrder();
+            }, 1000);
+            
+            setTimeout(() => {
+                log('3/4 Probando registro de sesión...', 'info');
+                testRegisterSession();
+            }, 1500);
+            
+            setTimeout(() => {
+                log('4/4 Probando generación de presentación...', 'info');
+                testGenerateBilling();
+                log('🎉 Suite de pruebas completada', 'success');
+            }, 2000);
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkSystemStatus, 1000);
+            log('🧪 Sistema de pruebas iniciado', 'info');
+        });
+    </script>
+</body>
+</html>

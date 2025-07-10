@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nueva Orden Médica</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --primary-color: #0c7ff2;
+      --primary-hover-color: #0a69c4;
+      --secondary-color: #e7edf4;
+      --secondary-hover-color: #d8e0ea;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --card-bg: #ffffff;
+      --border-color: #e5e7eb;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f9fafb;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+<div class="flex flex-col min-h-screen">
+<header class="bg-white shadow-sm">
+<nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<svg class="h-8 w-8 text-[var(--primary-color)]" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor"></path></svg>
+<a class="text-xl font-bold text-[var(--text-primary)]" href="#">MediOrder</a>
+</div>
+<div class="hidden md:flex items-center space-x-6">
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors" href="#">Inicio</a>
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors" href="#">Pacientes</a>
+<a class="text-[var(--primary-color)] font-semibold" href="#">Órdenes</a>
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors" href="#">Facturación</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+</button>
+<div class="w-10 h-10 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDfgJZMzk7URdpZisDInj_AIpUPBm7nptwbd4wvl8kv_-yDSGedmcMmPQW3yQ_8iTa4raPwWg5UUABtsRoMSJAUMgrMbIbUNoM33gZQMH6TVJ9YYpT6FF6V772skghDGNWhhdSBfWCAp-TE9lTW36r3PBkseWpZ15BUYAdHSv-81i-jWCvUDc9duX2VKTv2koJYUVem3VBa4_vCZIJItFRUJvEMRJXUSyThycSSET7hRnTUykwO6UV0Jav87wQvvcJLVHUyQmOMiUc");'></div>
+</div>
+</nav>
+</header>
+<main class="flex-grow container mx-auto p-6 lg:p-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+<div class="lg:col-span-2">
+<div class="bg-[var(--card-bg)] rounded-lg shadow-md p-6 md:p-8">
+<h1 class="text-2xl font-bold text-[var(--text-primary)] mb-2">Crear Nueva Orden</h1>
+<p class="text-[var(--text-secondary)] mb-8">Completa el formulario para generar una nueva orden médica.</p>
+<form class="space-y-6">
+<div>
+<label class="block text-sm font-medium text-[var(--text-secondary)] mb-1" for="paciente">Paciente</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">person</span>
+<select class="w-full pl-10 pr-10 py-2 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition" id="paciente" name="paciente">
+<option>Buscar paciente...</option>
+<option>Ana Rodriguez</option>
+<option>Carlos Gomez</option>
+<option>Luisa Fernandez</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-[var(--text-secondary)] mb-1" for="obra-social">Obra Social</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">medical_services</span>
+<select class="w-full pl-10 pr-10 py-2 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition" id="obra-social" name="obra-social">
+<option value="">Seleccionar obra social...</option>
+<option value="osde">OSDE</option>
+<option value="swiss">Swiss Medical</option>
+<option value="galeno">Galeno</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-[var(--text-secondary)] mb-1" for="practica">Práctica</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">vaccines</span>
+<select class="w-full pl-10 pr-10 py-2 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition" id="practica" name="practica">
+<option>Seleccionar práctica...</option>
+<option>Fisioterapia</option>
+<option>Kinesiología</option>
+<option>Psicología</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-sm font-medium text-[var(--text-secondary)] mb-1" for="sesiones">Cantidad de Sesiones</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">repeat</span>
+<input class="w-full pl-10 py-2 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition text-center" id="sesiones" min="1" name="sesiones" type="number" value="10"/>
+<div class="absolute right-2 flex items-center space-x-1">
+<button class="h-6 w-6 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition flex items-center justify-center" type="button">-</button>
+<button class="h-6 w-6 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition flex items-center justify-center" type="button">+</button>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-[var(--text-secondary)] mb-1" for="fecha-inicio">Fecha de Inicio</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">calendar_today</span>
+<input class="w-full pl-10 pr-4 py-2 border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)] focus:border-[var(--primary-color)] transition" id="fecha-inicio" name="fecha-inicio" type="date" value="2024-07-20"/>
+</div>
+</div>
+</div>
+<div class="flex justify-end items-center gap-4 pt-4 border-t border-[var(--border-color)]">
+<button class="px-6 py-2 rounded-lg border border-[var(--border-color)] text-[var(--text-secondary)] font-semibold hover:bg-[var(--secondary-color)] transition" type="button">Cancelar</button>
+<button class="px-6 py-2 rounded-lg bg-[var(--primary-color)] text-white font-semibold hover:bg-[var(--primary-hover-color)] transition shadow-sm" type="submit">Crear Orden</button>
+</div>
+</form>
+</div>
+</div>
+<aside class="lg:col-span-1 sticky top-8">
+<div class="bg-[var(--card-bg)] rounded-lg shadow-md p-6">
+<h2 class="text-xl font-bold text-[var(--text-primary)] mb-6">Resumen de la Orden</h2>
+<div class="space-y-4">
+<div class="flex justify-between items-center py-3 border-b border-[var(--border-color)]">
+<p class="text-sm text-[var(--text-secondary)]">Paciente</p>
+<p class="text-sm font-semibold text-[var(--text-primary)]">Ana Rodriguez</p>
+</div>
+<div class="flex justify-between items-center py-3 border-b border-[var(--border-color)]">
+<p class="text-sm text-[var(--text-secondary)]">Obra Social</p>
+<div class="flex items-center gap-2">
+<img alt="OSDE Logo" class="h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTKTS_V_wXakQ5Ufz0oxL9BbivNXyVMVkocsxMsAwCwEdt3IQkGvFQcGkCUA2LXMvS2Z09omQcAWRkjfJGcXn_2nDRsGYTzwx6rBibW3LqVyDiiNKW5hQXZsAhplNcybfIr9Hf_b-jtR3pbuKijDQFm-eZvu1jiiTqMmCKkdpppIJC7_oGYY0uOGPfVhZ7c2tXpHu169rgSd2PTqZ4R9F7MNS6rl_pldgEnBixxVagPz8gsDtEoHosweitLz1EVIUGGbIlCcsPRHY"/>
+<p class="text-sm font-semibold text-[var(--text-primary)]">OSDE</p>
+</div>
+</div>
+<div class="flex justify-between items-center py-3 border-b border-[var(--border-color)]">
+<p class="text-sm text-[var(--text-secondary)]">Práctica</p>
+<p class="text-sm font-semibold text-[var(--text-primary)]">Fisioterapia</p>
+</div>
+<div class="flex justify-between items-center py-3 border-b border-[var(--border-color)]">
+<p class="text-sm text-[var(--text-secondary)]">Cantidad de Sesiones</p>
+<p class="text-sm font-semibold text-[var(--text-primary)]">10</p>
+</div>
+<div class="flex justify-between items-center py-3">
+<p class="text-sm text-[var(--text-secondary)]">Fecha de Inicio</p>
+<p class="text-sm font-semibold text-[var(--text-primary)]">20/07/2024</p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+</div>
+
+</body></html>

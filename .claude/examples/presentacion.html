@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Generar Presentación - MediManage</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --primary-color: #0c7ff2;
+      --primary-hover-color: #0a6bce;
+      --secondary-color: #e7edf4;
+      --background-color: #f8fafc;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --green-color: #10b981;
+      --green-hover-color: #059669;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .btn {
+      @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+    .btn-primary {
+      @apply bg-[var(--primary-color)] text-white hover:bg-[var(--primary-hover-color)] focus:ring-[var(--primary-color)];
+    }
+    .btn-secondary {
+      @apply bg-[var(--secondary-color)] text-[var(--text-primary)] hover:bg-[#d9e2ee] focus:ring-[var(--secondary-color)];
+    }
+    .btn-outline {
+      @apply border border-[var(--border-color)] bg-transparent text-[var(--text-secondary)] hover:bg-[var(--secondary-color)] hover:text-[var(--text-primary)] focus:ring-[var(--border-color)];
+    }
+    .btn-green {
+      @apply bg-[var(--green-color)] text-white hover:bg-[var(--green-hover-color)] focus:ring-[var(--green-color)];
+    }
+    .form-input-elegant {
+        @apply block w-full rounded-lg border-[var(--border-color)] bg-white px-4 py-3 text-base text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] shadow-sm transition-colors focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)];
+    }
+  </style>
+</head>
+<body class="bg-[var(--background-color)] text-[var(--text-primary)]">
+<div class="flex min-h-screen flex-col">
+<header class="sticky top-0 z-10 w-full border-b border-[var(--border-color)] bg-white/80 backdrop-blur-md">
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<div class="flex h-16 items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="text-[var(--primary-color)]">
+<svg class="h-8 w-8" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z" fill="currentColor"></path>
+</svg>
+</div>
+<h1 class="text-xl font-bold">MediManage</h1>
+</div>
+<nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors" href="#">Dashboard</a>
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors" href="#">Pacientes</a>
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors" href="#">Prácticas</a>
+<a class="text-[var(--primary-color)] font-semibold" href="#">Presentaciones</a>
+<a class="text-[var(--text-secondary)] hover:text-[var(--primary-color)] transition-colors" href="#">Facturación</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="relative rounded-full p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBbrKUiL6qUzbxWpH_6Hq_OqU052bEqFoNQBofVqH48GRvk_Txy1vVSiqOUmrJy098Tt1aCUxp8zRlOpeh2mQql3lYyWtNNzbcS2-xFomP0r9EluoMCoQZE0uHe4zjStEsbmqnmH5oVNXvGuu2JV10u8HRNkWreZBR1-g9Ai_fkC75ESFtaOdXv9PbotKG85uvMYYpBYWEE3cstzXRyQlATOgGoMCI4JVaHp9LPYYwpQwHggMwYjpUcHo4wWwlUxCNwDOqiRzDFk0s");'></div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+<div class="mb-8">
+<h2 class="text-3xl font-bold tracking-tight">Generar Presentación</h2>
+<p class="mt-1 text-base text-[var(--text-secondary)]">Seleccione el período y la obra social para generar la presentación de órdenes médicas.</p>
+</div>
+<div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+<div class="lg:col-span-3">
+<div class="space-y-6 rounded-lg border border-[var(--border-color)] bg-white p-6 shadow-sm">
+<div>
+<label class="block text-sm font-medium text-[var(--text-primary)] mb-1.5" for="periodo">Período</label>
+<input class="form-input-elegant" id="periodo" name="periodo" type="month" value="2024-07"/>
+</div>
+<div class="space-y-4">
+<h3 class="text-base font-semibold">Resumen General</h3>
+<div class="space-y-3">
+<div class="flex justify-between items-baseline p-4 rounded-lg bg-slate-50">
+<p class="text-sm font-medium text-[var(--text-secondary)]">Total de Sesiones</p>
+<p class="text-2xl font-bold">16</p>
+</div>
+<div class="flex justify-between items-baseline p-4 rounded-lg bg-slate-50">
+<p class="text-sm font-medium text-[var(--text-secondary)]">Total a Facturar</p>
+<p class="text-2xl font-bold">$26,000.00</p>
+</div>
+<div class="flex justify-between items-baseline p-4 rounded-lg bg-slate-50">
+<p class="text-sm font-medium text-[var(--text-secondary)]">Obras Sociales</p>
+<p class="text-2xl font-bold">3</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-9">
+<div class="rounded-lg border border-[var(--border-color)] bg-white shadow-sm">
+<div class="border-b border-[var(--border-color)]">
+<nav aria-label="Tabs" class="-mb-px flex space-x-6 px-6">
+<a class="shrink-0 border-b-2 border-[var(--primary-color)] px-1 py-4 text-sm font-semibold text-[var(--primary-color)]" href="#">Obra Social A</a>
+<a class="shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-[var(--text-secondary)] hover:border-gray-300 hover:text-gray-700" href="#">Obra Social B</a>
+<a class="shrink-0 border-b-2 border-transparent px-1 py-4 text-sm font-medium text-[var(--text-secondary)] hover:border-gray-300 hover:text-gray-700" href="#">Obra Social C</a>
+</nav>
+</div>
+<div class="overflow-x-auto">
+<table class="min-w-full divide-y divide-[var(--border-color)]">
+<thead class="bg-gray-50">
+<tr>
+<th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-[var(--text-primary)] sm:pl-6" scope="col">Paciente</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[var(--text-primary)]" scope="col">DNI</th>
+<th class="px-3 py-3.5 text-left text-sm font-semibold text-[var(--text-primary)]" scope="col">Práctica</th>
+<th class="px-3 py-3.5 text-center text-sm font-semibold text-[var(--text-primary)]" scope="col">Sesiones</th>
+<th class="px-3 py-3.5 text-right text-sm font-semibold text-[var(--text-primary)]" scope="col">Arancel</th>
+<th class="py-3.5 pl-3 pr-4 text-right text-sm font-semibold text-[var(--text-primary)] sm:pr-6" scope="col">Subtotal</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[var(--border-color)] bg-white">
+<tr>
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-[var(--text-primary)] sm:pl-6">Sofía Rodríguez</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">32.456.789</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">Psicoterapia Individual</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-center">4</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-right">$1,500.00</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium text-[var(--text-primary)] text-right sm:pr-6">$6,000.00</td>
+</tr>
+<tr class="bg-slate-50">
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-[var(--text-primary)] sm:pl-6">Martín García</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">28.123.456</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">Terapia de Pareja</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-center">2</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-right">$2,000.00</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium text-[var(--text-primary)] text-right sm:pr-6">$4,000.00</td>
+</tr>
+<tr>
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-[var(--text-primary)] sm:pl-6">Lucía Pérez</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">35.789.012</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">Psicoterapia Individual</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-center">4</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-right">$1,500.00</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium text-[var(--text-primary)] text-right sm:pr-6">$6,000.00</td>
+</tr>
+<tr class="bg-slate-50">
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-[var(--text-primary)] sm:pl-6">Juan López</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">30.987.654</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">Terapia de Pareja</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-center">2</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-right">$2,000.00</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium text-[var(--text-primary)] text-right sm:pr-6">$4,000.00</td>
+</tr>
+<tr>
+<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-[var(--text-primary)] sm:pl-6">Ana Martínez</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">33.543.210</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)]">Psicoterapia Individual</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-center">4</td>
+<td class="whitespace-nowrap px-3 py-4 text-sm text-[var(--text-secondary)] text-right">$1,500.00</td>
+<td class="whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium text-[var(--text-primary)] text-right sm:pr-6">$6,000.00</td>
+</tr>
+</tbody>
+<tfoot>
+<tr class="border-t border-[var(--border-color)]">
+<th class="py-3.5 pl-4 pr-3 text-right text-base font-semibold text-[var(--text-primary)] sm:pl-6" colspan="5" scope="row">Total Obra Social A</th>
+<td class="py-3.5 pl-3 pr-4 text-right text-base font-bold text-[var(--primary-color)] sm:pr-6">$26,000.00</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-[var(--border-color)] bg-gray-50/50 px-6 py-4">
+<button class="btn btn-outline w-full sm:w-auto" type="button">
+<span class="material-symbols-outlined mr-2 text-base">visibility</span>
+                  Ver en Pantalla
+                </button>
+<button class="btn btn-green w-full sm:w-auto" type="button">
+<span class="material-symbols-outlined mr-2 text-base">download</span>
+                  Exportar a Excel
+                </button>
+<button class="btn btn-primary w-full sm:w-auto" type="button">
+<span class="material-symbols-outlined mr-2 text-base">check_circle</span>
+                  Marcar como Presentado
+                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

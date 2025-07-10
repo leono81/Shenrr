@@ -1,0 +1,263 @@
+# Gestor de Órdenes - POC
+# .gitignore para proyecto de frontend con JavaScript vanilla
+
+# ===========================
+# Archivos del sistema
+# ===========================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Linux
+*~
+
+# ===========================
+# Editores e IDEs
+# ===========================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Cursor IDE
+.cursor/
+!.cursor/rules/
+!.cursor/examples/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# IntelliJ IDEA / WebStorm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Nano
+*.save
+
+# ===========================
+# Logs y archivos temporales
+# ===========================
+
+# Logs generales
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.backup
+*~
+
+# ===========================
+# Node.js (si se agrega en el futuro)
+# ===========================
+
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Archivos de configuración opcional de npm
+.npmrc
+
+# Archivos de yarn
+.yarn/
+.pnp.*
+
+# ===========================
+# Archivos de build/dist
+# ===========================
+
+# Directorios de build
+build/
+dist/
+out/
+target/
+
+# Archivos generados
+*.min.js
+*.min.css
+*.bundle.js
+*.bundle.css
+
+# ===========================
+# Archivos de entorno y configuración
+# ===========================
+
+# Variables de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos de configuración específicos del entorno
+config.local.js
+config.local.json
+
+# ===========================
+# Archivos de testing
+# ===========================
+
+# Coverage
+coverage/
+.nyc_output
+.coverage
+*.lcov
+
+# Test artifacts
+test-results/
+playwright-report/
+test-artifacts/
+
+# ===========================
+# Archivos de documentación temporal
+# ===========================
+
+# Documentos temporales
+*.draft.md
+*.temp.md
+*.wip.md
+
+# Documentación auto-generada
+docs/auto-generated/
+api-docs/generated/
+
+# ===========================
+# Archivos específicos del proyecto
+# ===========================
+
+# Datos de prueba personalizados (mantener los originales)
+custom-test-data.js
+user-specific-data.json
+
+# Exports temporales
+exports/
+downloads/
+*.xlsx
+*.csv
+*.pdf
+
+# Backups del LocalStorage
+backup-*.json
+localstorage-backup-*
+
+# ===========================
+# Archivos de seguridad
+# ===========================
+
+# Claves y certificados
+*.key
+*.pem
+*.crt
+*.cert
+*.p12
+*.pfx
+
+# Archivos de autenticación
+auth.json
+credentials.json
+secrets.json
+
+# ===========================
+# Archivos de servicio web local
+# ===========================
+
+# Python simple server
+*.pyc
+__pycache__/
+
+# PHP built-in server logs
+.php_cs.cache
+
+# ===========================
+# Misceláneo
+# ===========================
+
+# Archivos de respaldo del editor
+*~
+*.orig
+*.rej
+
+# Archivos de parche
+*.patch
+*.diff
+
+# Archivos de compresión
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# Screenshots de testing (opcionales)
+screenshots/
+test-screenshots/
+
+# ===========================
+# Excepciones importantes
+# ===========================
+
+# MANTENER estos archivos importantes:
+!README*.md
+!LICENSE
+!.gitignore
+!package.json
+!.github/
+!docs/
+!.claude/examples/
+
+# ===========================
+# Comentarios sobre el proyecto
+# ===========================
+
+# Este .gitignore está diseñado para:
+# - Proyecto POC de frontend con JavaScript vanilla
+# - Sin dependencias de Node.js inicialmente
+# - Preparado para evolución a stack más complejo
+# - Compatible con diferentes editores e IDEs
+# - Protege datos sensibles y temporales
