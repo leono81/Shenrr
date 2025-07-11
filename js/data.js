@@ -320,7 +320,7 @@ GestorOrdenes.data = {
                 medicoDerivante_id: 3,
                 practica_id: 3,
                 fechaEmision: '2025-06-01',
-                cantidadSesionesTotal: 12,
+                cantidadSesionesTotal: 10,
                 estado: 'Cerrada Normal',
                 fechaCierre: '2025-06-30'
             }
@@ -454,6 +454,77 @@ GestorOrdenes.data = {
                 numeroSesion: 8,
                 fechaPrestacion: null,
                 estado: 'Pendiente'
+            },
+            // Sesiones para orden 3 (Ana Sofía Martínez) - 10 sesiones realizadas
+            {
+                id: 19,
+                orden_id: 3,
+                numeroSesion: 1,
+                fechaPrestacion: '2025-06-02',
+                estado: 'Realizada'
+            },
+            {
+                id: 20,
+                orden_id: 3,
+                numeroSesion: 2,
+                fechaPrestacion: '2025-06-04',
+                estado: 'Realizada'
+            },
+            {
+                id: 21,
+                orden_id: 3,
+                numeroSesion: 3,
+                fechaPrestacion: '2025-06-06',
+                estado: 'Realizada'
+            },
+            {
+                id: 22,
+                orden_id: 3,
+                numeroSesion: 4,
+                fechaPrestacion: '2025-06-09',
+                estado: 'Realizada'
+            },
+            {
+                id: 23,
+                orden_id: 3,
+                numeroSesion: 5,
+                fechaPrestacion: '2025-06-11',
+                estado: 'Realizada'
+            },
+            {
+                id: 24,
+                orden_id: 3,
+                numeroSesion: 6,
+                fechaPrestacion: '2025-06-13',
+                estado: 'Realizada'
+            },
+            {
+                id: 25,
+                orden_id: 3,
+                numeroSesion: 7,
+                fechaPrestacion: '2025-06-16',
+                estado: 'Realizada'
+            },
+            {
+                id: 26,
+                orden_id: 3,
+                numeroSesion: 8,
+                fechaPrestacion: '2025-06-18',
+                estado: 'Realizada'
+            },
+            {
+                id: 27,
+                orden_id: 3,
+                numeroSesion: 9,
+                fechaPrestacion: '2025-06-20',
+                estado: 'Realizada'
+            },
+            {
+                id: 28,
+                orden_id: 3,
+                numeroSesion: 10,
+                fechaPrestacion: '2025-06-23',
+                estado: 'Realizada'
             }
         ]
     },
@@ -464,7 +535,19 @@ GestorOrdenes.data = {
         
         // Verificar si ya se inicializó
         if (GestorOrdenes.storage.isInitialized()) {
-            console.log('Datos ya inicializados');
+            console.log('Datos ya inicializados - verificando integridad...');
+            
+            // Verificar si la orden ID 3 tiene los datos correctos
+            const orden3 = GestorOrdenes.storage.ordenes.getById(3);
+            const sesionesOrden3 = GestorOrdenes.storage.sesiones.getByOrden(3);
+            
+            if (!orden3 || orden3.cantidadSesionesTotal !== 10 || sesionesOrden3.length !== 10) {
+                console.log('Datos desactualizados detectados - ejecutando actualización forzada...');
+                this.forceUpdate();
+                return;
+            }
+            
+            console.log('Datos están actualizados correctamente');
             return;
         }
         
@@ -491,5 +574,30 @@ GestorOrdenes.data = {
         console.log('Reseteando datos...');
         GestorOrdenes.storage.clear();
         this.init();
+    },
+
+    // Función para forzar actualización de datos
+    forceUpdate: function() {
+        console.log('Forzando actualización de datos...');
+        
+        // Limpiar storage completamente
+        GestorOrdenes.storage.clear();
+        
+        // Cargar datos maestros actualizados
+        GestorOrdenes.storage.set('OBRAS_SOCIALES', this.obrasSociales);
+        GestorOrdenes.storage.set('PRACTICAS', this.practicas);
+        GestorOrdenes.storage.set('MEDICOS_DERIVANTES', this.medicosDerivantes);
+        GestorOrdenes.storage.set('PACIENTES', this.pacientes);
+        GestorOrdenes.storage.set('ARANCELES', this.aranceles);
+        
+        // Cargar datos de ejemplo actualizados
+        GestorOrdenes.storage.set('ORDENES', this.ejemplos.ordenes);
+        GestorOrdenes.storage.set('SESIONES', this.ejemplos.sesiones);
+        GestorOrdenes.storage.set('PRESENTACIONES', []);
+        
+        // Marcar como inicializado
+        GestorOrdenes.storage.markInitialized();
+        
+        console.log('Datos actualizados forzosamente - Ana Sofía debería tener 10 sesiones realizadas');
     }
 };

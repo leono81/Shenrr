@@ -477,7 +477,6 @@ GestorOrdenes.ui = {
         document.getElementById('totalOrdenes').textContent = stats.ordenesActivas;
         document.getElementById('totalSesiones').textContent = stats.sesionesRealizadas;
         document.getElementById('totalPendientes').textContent = stats.sesionesPendientes;
-        document.getElementById('totalPresentaciones').textContent = stats.presentaciones;
     },
 
     // Cargar órdenes recientes
@@ -652,6 +651,43 @@ GestorOrdenes.init = function() {
     
     console.log('=== POC Inicializado Correctamente ===');
     return true;
+};
+
+// Función de utilidad para debugging desde la consola
+GestorOrdenes.debug = {
+    forceUpdateData: function() {
+        console.log('🔧 Ejecutando actualización forzada de datos...');
+        GestorOrdenes.data.forceUpdate();
+        
+        // Refrescar estadísticas si estamos en el dashboard
+        if (typeof GestorOrdenes.ui !== 'undefined' && GestorOrdenes.ui.loadStats) {
+            setTimeout(() => {
+                GestorOrdenes.ui.loadStats();
+                GestorOrdenes.ui.loadRecentOrders();
+                console.log('📊 Dashboard actualizado');
+            }, 500);
+        }
+        
+        console.log('✅ Actualización completada - recarga la página si no ves cambios');
+    },
+    
+    checkOrder3: function() {
+        const orden3 = GestorOrdenes.storage.ordenes.getById(3);
+        const sesionesOrden3 = GestorOrdenes.storage.sesiones.getByOrden(3);
+        const progreso = GestorOrdenes.utils.getSessionProgress(3);
+        
+        console.log('📋 Diagnóstico Orden ID 3 (Ana Sofía Martínez):');
+        console.log('- Cantidad total sesiones:', orden3 ? orden3.cantidadSesionesTotal : 'NO ENCONTRADA');
+        console.log('- Sesiones en DB:', sesionesOrden3.length);
+        console.log('- Progreso calculado:', `${progreso.realizadas}/${progreso.total} (${progreso.porcentaje}%)`);
+        console.log('- Estado orden:', orden3 ? orden3.estado : 'NO ENCONTRADA');
+        
+        if (sesionesOrden3.length > 0) {
+            console.log('- Estados sesiones:', sesionesOrden3.map(s => `${s.numeroSesion}:${s.estado}`).join(', '));
+        }
+        
+        return { orden3, sesionesOrden3, progreso };
+    }
 };
 
 // Inicializar aplicación cuando el DOM esté listo

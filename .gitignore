@@ -250,6 +250,7 @@ test-screenshots/
 !.github/
 !docs/
 !.claude/examples/
+!.claude/Claude.md
 
 # ===========================
 # Comentarios sobre el proyecto

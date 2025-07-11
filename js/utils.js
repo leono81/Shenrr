@@ -257,13 +257,11 @@ GestorOrdenes.utils = {
     getGeneralStats: function() {
         const ordenes = GestorOrdenes.storage.ordenes.getAll();
         const sesiones = GestorOrdenes.storage.sesiones.getAll();
-        const presentaciones = GestorOrdenes.storage.presentaciones.getAll();
         
         return {
             ordenesActivas: ordenes.filter(o => o.estado === 'Abierta').length,
             sesionesRealizadas: sesiones.filter(s => s.estado === 'Realizada').length,
-            sesionesPendientes: sesiones.filter(s => s.estado === 'Pendiente').length,
-            presentaciones: presentaciones.length
+            sesionesPendientes: sesiones.filter(s => s.estado === 'Pendiente').length
         };
     },
 

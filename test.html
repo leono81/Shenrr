@@ -31,6 +31,7 @@
             <h3>🎮 Pruebas Automáticas</h3>
             <button onclick="runAllTests()">Ejecutar Todas las Pruebas</button>
             <button onclick="resetData()">Resetear Datos</button>
+            <button onclick="forceUpdateData()">Actualizar Datos (Fix Ana Sofía)</button>
             <button onclick="clearLog()">Limpiar Log</button>
         </div>
 
@@ -198,6 +199,35 @@
                 updateStats();
             } catch (error) {
                 log('Error al resetear datos: ' + error.message, 'error');
+            }
+        }
+
+        function forceUpdateData() {
+            try {
+                GestorOrdenes.data.forceUpdate();
+                log('✅ Datos actualizados forzosamente - Ana Sofía debería tener 10 sesiones', 'success');
+                
+                // Verificar específicamente la orden de Ana Sofía
+                setTimeout(() => {
+                    const orden3 = GestorOrdenes.storage.ordenes.getById(3);
+                    const sesionesOrden3 = GestorOrdenes.storage.sesiones.getByOrden(3);
+                    const progreso = GestorOrdenes.utils.getSessionProgress(3);
+                    
+                    log(`📊 Orden ID 3: ${orden3 ? orden3.cantidadSesionesTotal : 'NO ENCONTRADA'} sesiones totales`, 'info');
+                    log(`📊 Sesiones encontradas: ${sesionesOrden3.length}`, 'info');
+                    log(`📊 Progreso: ${progreso.realizadas}/${progreso.total} (${progreso.porcentaje}%)`, 'info');
+                    
+                    if (orden3 && orden3.cantidadSesionesTotal === 10 && sesionesOrden3.length === 10) {
+                        log('🎉 ¡ÉXITO! Ana Sofía Martínez tiene los datos correctos', 'success');
+                    } else {
+                        log('❌ PROBLEMA: Los datos siguen incorrectos', 'error');
+                    }
+                    
+                    updateStats();
+                }, 500);
+                
+            } catch (error) {
+                log('Error al actualizar datos: ' + error.message, 'error');
             }
         }
 
