@@ -206,6 +206,35 @@ GestorOrdenes.utils = {
         return Date.now() + Math.random().toString(36).substr(2, 9);
     },
 
+    // Obtener icono y clase CSS por práctica médica
+    getPracticeIcon: function(practiceId) {
+        // Validar que practiceId no sea undefined o null
+        if (!practiceId) {
+            return { icon: 'bi-clipboard-heart', class: 'practica-default' };
+        }
+
+        const practica = GestorOrdenes.storage.practicas.getById(practiceId);
+        if (!practica || !practica.nombrePractica || typeof practica.nombrePractica !== 'string') {
+            return { icon: 'bi-clipboard-heart', class: 'practica-default' };
+        }
+        
+        const nombreLower = practica.nombrePractica.toLowerCase();
+        
+        if (nombreLower.includes('kinesiologia')) {
+            return { icon: 'bi-heart-pulse', class: 'practica-kinesiologia' };
+        } else if (nombreLower.includes('osteopatia')) {
+            return { icon: 'bi-diagram-2', class: 'practica-osteopatia' };
+        } else if (nombreLower.includes('rehabilitacion')) {
+            return { icon: 'bi-arrow-repeat', class: 'practica-rehabilitacion' };
+        } else if (nombreLower.includes('fisioterapia')) {
+            return { icon: 'bi-person-arms-up', class: 'practica-fisioterapia' };
+        } else if (nombreLower.includes('reeducacion')) {
+            return { icon: 'bi-arrow-up-right-circle', class: 'practica-reeducacion' };
+        } else {
+            return { icon: 'bi-clipboard-heart', class: 'practica-default' };
+        }
+    },
+
     // Debounce para búsquedas
     debounce: function(func, wait) {
         let timeout;

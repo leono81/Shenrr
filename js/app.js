@@ -783,9 +783,9 @@ GestorOrdenes.ui = {
 
         if (citasHoy.length === 0) {
             container.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="bi bi-calendar-x display-6 text-muted"></i>
-                    <p class="text-muted mt-2">No hay citas programadas para hoy</p>
+                <div class="empty-appointments">
+                    <i class="bi bi-calendar-x"></i>
+                    <p>No hay citas programadas para hoy</p>
                     <div class="d-flex gap-2 justify-content-center">
                         <a href="pages/ordenes.html" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-file-earmark-plus"></i> Ver Órdenes Pendientes
@@ -799,33 +799,29 @@ GestorOrdenes.ui = {
             return;
         }
 
-        // Renderizar citas con estados dinámicos
-        let citasHtml = '<div class="row">';
+        // Renderizar citas con nuevo estilo de lista
+        let citasHtml = '';
         citasHoy.forEach(cita => {
             const estadoInfo = this.getAppointmentStatus(cita);
+            const practiceIcon = GestorOrdenes.utils.getPracticeIcon(cita.practica_id);
+            
             citasHtml += `
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card border-${estadoInfo.color} h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="card-title text-${estadoInfo.color}">
-                                    <i class="bi bi-clock"></i> ${cita.hora_programada}
-                                </h6>
-                                <span class="badge bg-${estadoInfo.color}">${estadoInfo.texto}</span>
-                            </div>
-                            <p class="card-text">
-                                <strong>${cita.paciente_nombre}</strong><br>
-                                <small class="text-muted">
-                                    ${cita.obra_social} | ${cita.practica}
-                                </small>
-                            </p>
-                            ${this.getAppointmentActions(cita, estadoInfo.estado)}
-                        </div>
+                <div class="cita-item ${estadoInfo.cssClass}">
+                    <div class="cita-icon ${practiceIcon.class}">
+                        <i class="bi ${practiceIcon.icon}"></i>
+                    </div>
+                    <div class="cita-content">
+                        <div class="cita-title">${cita.paciente_nombre}</div>
+                        <div class="cita-subtitle">${cita.obra_social} • ${cita.practica}</div>
+                    </div>
+                    <div class="cita-stats">
+                        <div class="cita-time">${cita.hora_programada}</div>
+                        <div class="cita-duration">60 min</div>
+                        <div class="cita-badge status-${estadoInfo.estado}">${estadoInfo.texto}</div>
                     </div>
                 </div>
             `;
         });
-        citasHtml += '</div>';
         
         container.innerHTML = citasHtml;
     },
@@ -856,6 +852,7 @@ GestorOrdenes.ui = {
                 paciente_dni: paciente.dni,
                 obra_social: obraSocial.nombre,
                 practica: practica.nombrePractica,
+                practica_id: practica.id,
                 hora_programada: sesion.hora_programada,
                 estado: sesion.estado,
                 fecha_programada: sesion.fecha_programada,
@@ -876,7 +873,8 @@ GestorOrdenes.ui = {
             return {
                 estado: 'realizada',
                 texto: 'REALIZADA',
-                color: 'success'
+                color: 'success',
+                cssClass: 'completada'
             };
         }
         
@@ -884,16 +882,18 @@ GestorOrdenes.ui = {
             return {
                 estado: 'ausente',
                 texto: 'AUSENTE',
-                color: 'danger'
+                color: 'danger',
+                cssClass: 'vencida'
             };
         }
         
         // Ventana de "en curso": ±15 minutos
         if (currentTime >= appointmentTime - 15 && currentTime <= appointmentTime + 15) {
             return {
-                estado: 'en_curso',
+                estado: 'en-curso',
                 texto: 'EN CURSO',
-                color: 'warning'
+                color: 'warning',
+                cssClass: 'en-curso'
             };
         }
         
@@ -901,14 +901,16 @@ GestorOrdenes.ui = {
             return {
                 estado: 'vencida',
                 texto: 'VENCIDA',
-                color: 'danger'
+                color: 'danger',
+                cssClass: 'vencida'
             };
         }
         
         return {
-            estado: 'pendiente',
-            texto: 'PENDIENTE',
-            color: 'primary'
+            estado: 'programada',
+            texto: 'PROGRAMADA',
+            color: 'success',
+            cssClass: 'futura'
         };
     },
 
@@ -973,6 +975,7 @@ GestorOrdenes.ui = {
                 sesion_id: sesion.id,
                 orden_id: orden.id,
                 practica: practica.nombrePractica,
+                practica_id: practica.id,
                 hora_programada: sesion.hora_programada,
                 estado: sesion.estado,
                 fecha_programada: sesion.fecha_programada,

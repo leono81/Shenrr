@@ -69,6 +69,11 @@ GestorOrdenes.data = {
             id: 5,
             nombrePractica: 'Sesión Reeducación Postural',
             codigoInterno: 'REE-POST-001'
+        },
+        {
+            id: 6,
+            nombrePractica: 'Sesión Fisioterapia',
+            codigoInterno: 'FISIO-001'
         }
     ],
 
@@ -352,6 +357,35 @@ GestorOrdenes.data = {
             obraSocial_id: 4,
             importe: 5000,
             fecha_vigencia: '2024-01-01'
+        },
+        // Fisioterapia
+        {
+            id: 21,
+            practica_id: 6,
+            obraSocial_id: 1,
+            importe: 5200,
+            fecha_vigencia: '2024-01-01'
+        },
+        {
+            id: 22,
+            practica_id: 6,
+            obraSocial_id: 2,
+            importe: 4800,
+            fecha_vigencia: '2024-01-01'
+        },
+        {
+            id: 23,
+            practica_id: 6,
+            obraSocial_id: 3,
+            importe: 4500,
+            fecha_vigencia: '2024-01-01'
+        },
+        {
+            id: 24,
+            practica_id: 6,
+            obraSocial_id: 4,
+            importe: 5100,
+            fecha_vigencia: '2024-01-01'
         }
     ],
 
@@ -468,7 +502,7 @@ GestorOrdenes.data = {
                 paciente_id: 7,
                 obraSocial_id: 2,
                 medicoDerivante_id: 3,
-                practica_id: 4,
+                practica_id: 6,
                 fechaEmision: '2025-07-14',
                 cantidadSesionesTotal: 10,
                 estado: 'Abierta',
@@ -1009,31 +1043,31 @@ GestorOrdenes.data = {
                 cambio_horario: true,
                 motivo_cambio: 'atraso'
             },
-            // Sesiones para HOY (16 de julio) - Diferentes horarios
+            // Sesiones para HOY (16 de julio) - Solo 5 turnos para presentación
             {
                 id: 31,
                 orden_id: 4,
                 numeroSesion: 3,
-                fechaPrestacion: null,
-                estado: 'Pendiente',
+                fechaPrestacion: '2025-07-16',
+                estado: 'Realizada',
                 profesional_id: 1,
                 fecha_programada: '2025-07-16',
-                hora_programada: '09:00',
-                fecha_real: null,
-                hora_real: null,
+                hora_programada: '15:00',
+                fecha_real: '2025-07-16',
+                hora_real: '15:00',
                 tipo_atencion: 'programada'
             },
             {
                 id: 32,
                 orden_id: 5,
                 numeroSesion: 1,
-                fechaPrestacion: null,
-                estado: 'Pendiente',
+                fechaPrestacion: '2025-07-16',
+                estado: 'Realizada',
                 profesional_id: 1,
                 fecha_programada: '2025-07-16',
-                hora_programada: '11:00',
-                fecha_real: null,
-                hora_real: null,
+                hora_programada: '16:00',
+                fecha_real: '2025-07-16',
+                hora_real: '16:00',
                 tipo_atencion: 'programada'
             },
             {
@@ -1044,7 +1078,7 @@ GestorOrdenes.data = {
                 estado: 'Pendiente',
                 profesional_id: 1,
                 fecha_programada: '2025-07-16',
-                hora_programada: '15:00',
+                hora_programada: '17:00',
                 fecha_real: null,
                 hora_real: null,
                 tipo_atencion: 'programada'
@@ -1053,16 +1087,14 @@ GestorOrdenes.data = {
                 id: 34,
                 orden_id: 7,
                 numeroSesion: 1,
-                fechaPrestacion: '2025-07-16',
-                estado: 'Realizada',
+                fechaPrestacion: null,
+                estado: 'Pendiente',
                 profesional_id: 1,
                 fecha_programada: '2025-07-16',
-                hora_programada: '14:00',
-                fecha_real: '2025-07-16',
-                hora_real: '13:45',
-                tipo_atencion: 'programada',
-                cambio_horario: true,
-                motivo_cambio: 'adelanto'
+                hora_programada: '20:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 35,
@@ -1072,7 +1104,7 @@ GestorOrdenes.data = {
                 estado: 'Pendiente',
                 profesional_id: 1,
                 fecha_programada: '2025-07-16',
-                hora_programada: '16:30',
+                hora_programada: '20:30',
                 fecha_real: null,
                 hora_real: null,
                 tipo_atencion: 'programada'
@@ -1201,7 +1233,7 @@ GestorOrdenes.data = {
             
             // *** SESIONES PARA CREAR CONFLICTOS DE HORARIO ***
             
-            // Orden 10 (Carmen Rosa Jiménez) - Conflicto en 11:00 con Roberto Carlos Díaz
+            // Sesiones para otros días (mover a mañana para no interferir con el conteo de hoy)
             {
                 id: 45,
                 orden_id: 10,
@@ -1209,14 +1241,13 @@ GestorOrdenes.data = {
                 fechaPrestacion: null,
                 estado: 'Pendiente',
                 profesional_id: 1,
-                fecha_programada: '2025-07-16',
-                hora_programada: '11:00', // CONFLICTO: mismo horario que sesión id: 32
+                fecha_programada: '2025-07-17',
+                hora_programada: '09:00',
                 fecha_real: null,
                 hora_real: null,
                 tipo_atencion: 'programada'
             },
             
-            // Orden 11 (Fernando José Castro) - Conflicto en 15:00 con Silvia Elena Torres
             {
                 id: 46,
                 orden_id: 11,
@@ -1224,14 +1255,13 @@ GestorOrdenes.data = {
                 fechaPrestacion: null,
                 estado: 'Pendiente',
                 profesional_id: 1,
-                fecha_programada: '2025-07-16',
-                hora_programada: '15:00', // CONFLICTO: mismo horario que sesión id: 33
+                fecha_programada: '2025-07-17',
+                hora_programada: '10:00',
                 fecha_real: null,
                 hora_real: null,
                 tipo_atencion: 'programada'
             },
             
-            // Orden 12 (Gabriela Beatriz Romero) - TERCER paciente en 15:00 - CAPACIDAD MEDIA
             {
                 id: 47,
                 orden_id: 12,
@@ -1239,14 +1269,13 @@ GestorOrdenes.data = {
                 fechaPrestacion: null,
                 estado: 'Pendiente',
                 profesional_id: 1,
-                fecha_programada: '2025-07-16',
-                hora_programada: '15:00', // TERCER paciente en 15:00
+                fecha_programada: '2025-07-17',
+                hora_programada: '11:00',
                 fecha_real: null,
                 hora_real: null,
                 tipo_atencion: 'programada'
             },
             
-            // Orden 14 (Isabel María Vargas) - TERCER paciente en 11:00 - CAPACIDAD MEDIA
             {
                 id: 48,
                 orden_id: 14,
@@ -1254,8 +1283,8 @@ GestorOrdenes.data = {
                 fechaPrestacion: null,
                 estado: 'Pendiente',
                 profesional_id: 1,
-                fecha_programada: '2025-07-16',
-                hora_programada: '11:00', // TERCER paciente en 11:00
+                fecha_programada: '2025-07-17',
+                hora_programada: '14:00',
                 fecha_real: null,
                 hora_real: null,
                 tipo_atencion: 'programada'

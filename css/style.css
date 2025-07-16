@@ -551,6 +551,205 @@ body {
     }
 }
 
+/* Contenedor de agenda con scroll */
+.agenda-container {
+    height: calc(100vh - 450px);
+    min-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+/* Lista de citas estilo dashboard */
+.cita-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cita-item:hover {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.cita-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin-right: 15px;
+    font-size: 20px;
+    color: white;
+}
+
+.cita-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.cita-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+.cita-subtitle {
+    color: #6c757d;
+    font-size: 13px;
+    margin-bottom: 0;
+}
+
+.cita-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.cita-time {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 2px;
+}
+
+.cita-duration {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.cita-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    min-width: 60px;
+    text-align: center;
+}
+
+.cita-badge.status-programada {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+.cita-badge.status-en-curso {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.cita-badge.status-realizada {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.cita-badge.status-ausente {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.cita-badge.status-vencida {
+    background: #ffcdd2;
+    color: #d32f2f;
+}
+
+/* Estilos para citas vencidas */
+.cita-item.vencida {
+    border-left: 4px solid #f44336;
+    background: #ffebee;
+}
+
+.cita-item.vencida .cita-title {
+    color: #c62828;
+}
+
+/* Estilos para citas en curso */
+.cita-item.en-curso {
+    border-left: 4px solid #ff9800;
+    background: #fff3e0;
+}
+
+.cita-item.en-curso .cita-title {
+    color: #f57c00;
+}
+
+/* Estilos para citas futuras */
+.cita-item.futura {
+    border-left: 4px solid #4caf50;
+    background: #f1f8e9;
+}
+
+.cita-item.futura .cita-title {
+    color: #2e7d32;
+}
+
+/* Estilos para citas completadas */
+.cita-item.completada {
+    border-left: 4px solid #2196f3;
+    background: #e3f2fd;
+}
+
+.cita-item.completada .cita-title {
+    color: #1976d2;
+}
+
+/* Colores para iconos por práctica */
+.practica-kinesiologia { background: #9c27b0; }
+.practica-osteopatia { background: #673ab7; }
+.practica-rehabilitacion { background: #ff5722; }
+.practica-fisioterapia { background: #2196f3; }
+.practica-reeducacion { background: #4caf50; }
+.practica-default { background: #607d8b; }
+
+/* Lista vacía */
+.empty-appointments {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.empty-appointments i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .cita-item {
+        padding: 12px;
+    }
+    
+    .cita-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+        font-size: 18px;
+    }
+    
+    .cita-title {
+        font-size: 14px;
+    }
+    
+    .cita-time {
+        font-size: 14px;
+    }
+    
+    .cita-duration {
+        font-size: 11px;
+    }
+}
+
 /* Print styles */
 @media print {
     .no-print {
