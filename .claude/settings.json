@@ -1,7 +1,5 @@
 {
   "env": {
-      "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true",
-      "CLAUDE_CODE_ENABLE_TELEMETRY": "1",
-      "OTEL_METRICS_EXPORTER": "otlp"
+      "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true"
   }
 }
