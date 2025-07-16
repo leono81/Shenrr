@@ -47,9 +47,10 @@ Los profesionales de la salud en Argentina enfrentan una **significativa carga a
 
 | Módulo | Descripción | Estado |
 |--------|-------------|--------|
-| **🏠 Dashboard** | Vista general con estadísticas y check-in rápido | ✅ Completo |
-| **📋 Gestión de Órdenes** | Crear, listar, filtrar y gestionar órdenes | ✅ Completo |
-| **✅ Check-in Diario** | Registro rápido de sesiones por DNI | ✅ Completo |
+| **🏠 Dashboard Diario** | Dashboard con foco en citas de hoy y estadísticas diarias | ✅ Completo (HU-2.1) |
+| **📋 Gestión de Órdenes** | Crear, listar, filtrar y gestionar órdenes | ✅ Completo (HU-1.1) |
+| **✅ Check-in Inteligente** | Check-in con validación de horarios y confirmaciones | ✅ Completo (HU-2.2) |
+| **📅 Agenda Médica** | Vista de agenda con gestión de capacidad y conflictos | ✅ Completo (HU-1.2) |
 | **💰 Presentaciones** | Generación automática de reportes de facturación | ✅ Completo |
 | **📊 Exportación Excel** | Export real con librerías JavaScript | ✅ Completo |
 
@@ -57,16 +58,19 @@ Los profesionales de la salud en Argentina enfrentan una **significativa carga a
 
 ```mermaid
 graph LR
-    A[Crear Orden] --> B[Registrar Sesiones]
-    B --> C[Generar Presentación]
-    C --> D[Exportar Excel]
-    D --> E[Facturar Obra Social]
+    A[Crear Orden] --> B[Ver Agenda]
+    B --> C[Check-in Inteligente]
+    C --> D[Dashboard Diario]
+    D --> E[Generar Presentación]
+    E --> F[Exportar Excel]
 ```
 
-1. **Carga de Órdenes**: Crear pacientes y órdenes con validaciones
-2. **Registro de Sesiones**: Check-in diario por DNI con un click
-3. **Generación de Presentaciones**: Algoritmo complejo con límites y aranceles
-4. **Exportación**: Excel real para envío a obras sociales
+1. **Carga de Órdenes**: Crear pacientes y órdenes con validaciones (HU-1.1)
+2. **Agenda Médica**: Visualización de citas con gestión de capacidad (HU-1.2)
+3. **Check-in Inteligente**: Validación de horarios con tolerancia ±30min (HU-2.2)
+4. **Dashboard Diario**: Foco en citas de hoy y estadísticas del día (HU-2.1)
+5. **Generación de Presentaciones**: Algoritmo complejo con límites y aranceles
+6. **Exportación**: Excel real para envío a obras sociales
 
 ## 🛠️ Stack Tecnológico
 
@@ -135,31 +139,58 @@ El sistema viene **precargado** con datos de prueba:
 
 | Tipo | Cantidad | Ejemplos |
 |------|----------|----------|
-| **Pacientes** | 5 | María José Rodríguez (DNI: 12345678) |
-| **Obras Sociales** | 4 | Swiss Medical, Galeno, Medife, Sancor |
-| **Prácticas** | 5 | Kinesiología, Osteopatía, Rehabilitación |
-| **Órdenes** | 3 | 2 abiertas, 1 cerrada con sesiones completas |
+| **Pacientes** | 15 | María José Rodríguez (DNI: 12345678) |
+| **Obras Sociales** | 5 | Swiss Medical, Galeno, Medife, Sancor, Particular |
+| **Prácticas** | 6 | Kinesiología, Osteopatía, Rehabilitación, Fisioterapia |
+| **Órdenes** | 14 | Múltiples estados y fechas para testing completo |
+| **Sesiones** | 53 | Con conflictos de horarios para agenda |
 
 #### 🔍 DNIs para Testing
-- `12345678` - María José Rodríguez (Swiss Medical) - 3 sesiones realizadas
-- `23456789` - Carlos Alberto Fernández (Galeno) - 2 sesiones realizadas  
-- `34567890` - Ana Sofía Martínez (Medife) - 10 sesiones completas
+
+**Casos de Uso Principales:**
+- `12345678` - María José Rodríguez (Swiss Medical) - Citas de hoy para dashboard
+- `23456789` - Carlos Alberto Fernández (Galeno) - Check-in inteligente temprano
+- `34567890` - Ana Sofía Martínez (Medife) - Agenda con conflictos de horario
+- `45678901` - Lucía Beatriz González (Swiss Medical) - Múltiples órdenes activas
+- `56789012` - Roberto Carlos Silva (Galeno) - Sesiones diferidas anteriores
+
+**Casos de Testing Específicos:**
+- `67890123` - Patricia Elena Morales (Medife) - Orden cerrada manual
+- `78901234` - Miguel Andrés López (Sancor) - Sin límites mensuales
+- `89012345` - Carmen Rosa Jiménez (Particular) - No incluir en presentaciones
+- `90123456` - Fernando José Ramírez (Swiss Medical) - Citas futuras programadas
+- `01234567` - Isabella Sofia Torres (Galeno) - Conflictos de agenda extremos
+
+**Escenarios de Conflicto:**
+- **Hoy 11:00**: 3 pacientes simultáneos (María José, Carlos, Ana)
+- **Hoy 15:00**: 3 pacientes simultáneos (Patricia, Miguel, Carmen)
+- **Mañana 09:00**: 5 pacientes simultáneos para testing de capacidad
 
 ## 📱 Guía de Usuario
 
-### 🏠 Dashboard Principal (`index.html`)
+### 🏠 Dashboard Diario (`index.html`) - HU-2.1
 
-El punto de entrada del sistema con:
+Dashboard enfocado en la gestión diaria con layout de 3 filas:
 
-- **📊 Estadísticas en tiempo real**: Órdenes activas, sesiones realizadas/pendientes
-- **🔍 Check-in rápido**: Búsqueda por DNI para registro inmediato
-- **📋 Órdenes recientes**: Vista de las últimas órdenes creadas
-- **⚡ Acciones rápidas**: Enlaces directos a crear orden o presentación
+**Primera Fila - Acciones Rápidas**:
+- **🔍 Check-in Inteligente**: Búsqueda por DNI con validación de horarios
+- **➕ Nueva Orden**: Acceso directo a crear órdenes
+
+**Segunda Fila - Citas de Hoy**:
+- **📅 Citas Programadas**: Lista de todas las citas del día actual
+- **🔄 Estados dinámicos**: Programada → En Curso → Realizada/Ausente
+- **⏰ Indicadores de tiempo**: Visual de citas próximas, en curso y pasadas
+
+**Tercera Fila - Estadísticas Diarias**:
+- **📊 Citas del Día**: Contador en tiempo real
+- **✅ Sesiones Realizadas**: Progreso del día
+- **💰 Ingresos Estimados**: Cálculo automático
 
 **Ejemplo de uso**:
-1. Ingresar DNI `12345678` en el campo de búsqueda
-2. Hacer click en "Buscar"
-3. Seleccionar "Registrar Sesión de Hoy" en la orden deseada
+1. Ver citas programadas para hoy automáticamente
+2. Buscar paciente por DNI `12345678`
+3. Check-in inteligente valida si llega a tiempo (±30min)
+4. Confirmación modal para llegadas tempranas/tardías
 
 ### 📋 Gestión de Órdenes (`pages/ordenes.html`)
 
@@ -182,20 +213,52 @@ Centro de control para el manejo completo de órdenes:
 - **👁️ Ver detalle**: Modal completo con información de sesiones
 - **❌ Cerrar orden**: Marcar manualmente como completada
 
-### ✅ Check-in Diario (`pages/checkin.html`)
+### ✅ Check-in Inteligente (`pages/checkin.html`) - HU-2.2
 
-Interfaz optimizada para el flujo diario más común:
+Check-in avanzado con validación inteligente de horarios:
 
-#### Flujo de Check-in
+#### Flujo de Check-in Inteligente
 1. **Búsqueda por DNI**: Input grande y accesible
-2. **Mostrar órdenes activas**: Lista filtrada del paciente
-3. **Un click para registrar**: "Registrar Sesión de Hoy"
-4. **Confirmación visual**: Modal con detalles de la sesión
+2. **Validación automática**: Sistema verifica horario de la cita
+3. **Tolerancia ±30min**: Ventana de tiempo aceptable
+4. **Confirmación inteligente**: Modales específicos para cada caso
+
+#### Casos de Validación
+- **✅ A tiempo**: Check-in directo sin confirmación adicional
+- **⏰ Temprano**: Modal de confirmación "¿Desea registrar antes de tiempo?"
+- **⏰ Tardío**: Modal de confirmación "¿Desea registrar llegada tardía?"
+- **❌ Muy fuera de horario**: Notificación de reprogramación sugerida
+
+#### Metadatos de Sesión
+- **fecha_real / hora_real**: Timestamp exacto del check-in
+- **tipo_atencion**: programada, temprana, tardia
+- **cambio_horario**: boolean si hubo modificación
+- **motivo_cambio**: razón del cambio si aplica
 
 #### Funcionalidades Extra
 - **Marcar ausente**: Registro de inasistencias
-- **Historial del día**: Todas las sesiones registradas hoy
-- **Manejo de errores**: Paciente no encontrado, sin órdenes activas
+- **Historial del día**: Sesiones con metadatos de timing
+- **Dashboard actualizado**: Integración automática post check-in
+
+### 📅 Agenda Médica (`pages/agenda.html`) - HU-1.2
+
+Vista de agenda con gestión avanzada de capacidad:
+
+#### Funcionalidades de Agenda
+- **🗺️ Vista por días**: Navegación fácil entre fechas
+- **📅 Calendario integrado**: Selección visual de fechas
+- **⏰ Slots de tiempo**: Visualización de horarios ocupados
+
+#### Gestión de Capacidad
+- **🔴 Conflictos visuales**: Identificación automática de solapamientos
+- **🟡 Indicadores de color**: Verde (libre), Amarillo (ocupado), Rojo (conflicto)
+- **📊 Contador de pacientes**: Número de citas por slot
+- **⚠️ Alertas de capacidad**: Notificaciones de sobrecarga
+
+#### Tooltips Informativos
+- **📌 Detalles completos**: Paciente, práctica, obra social
+- **🔍 Estados**: Programada, En Curso, Realizada, Ausente
+- **⏱️ Timing**: Hora programada vs hora real
 
 ### 💰 Presentaciones (`pages/presentaciones.html`)
 
@@ -221,16 +284,19 @@ Módulo más complejo del sistema para facturación:
 MedApp/
 ├── index.html              # 🏠 Dashboard principal
 ├── pages/
-│   ├── ordenes.html       # 📋 Gestión de órdenes  
-│   ├── checkin.html       # ✅ Check-in diario
+│   ├── ordenes.html       # 📋 Gestión de órdenes (HU-1.1)
+│   ├── agenda.html        # 📅 Agenda médica con capacidad (HU-1.2)
+│   ├── checkin.html       # ✅ Check-in inteligente (HU-2.2)
 │   └── presentaciones.html # 💰 Generación de reportes
 ├── js/
 │   ├── app.js             # 🧠 Lógica principal y UI
+│   ├── agenda.js          # 📅 Lógica específica de agenda
 │   ├── storage.js         # 💾 LocalStorage management
-│   ├── data.js            # 📊 Datos de prueba y ejemplos
+│   ├── data.js            # 📊 Datos de prueba expandidos
 │   └── utils.js           # 🔧 Utilidades y helpers
 ├── css/
-│   └── style.css          # 🎨 Estilos personalizados
+│   ├── style.css          # 🎨 Estilos personalizados
+│   └── agenda.css         # 🎨 Estilos específicos de agenda
 ├── test.html              # 🧪 Página de testing y debugging
 ├── README_POC.md          # 📖 Documentación técnica detallada
 └── README.md              # 📋 Este archivo
@@ -323,17 +389,26 @@ const arancel = buscarArancelVigente(
 
 ### 🔬 Página de Testing (`test.html`)
 
-Herramienta completa para validación:
+Suite de pruebas actualizada para todas las historias de usuario:
 
 ```javascript
 // Funciones disponibles:
-- runAllTests()           // Suite completa de pruebas
+- runAllTests()           // Suite completa de pruebas para HU-1.1 a HU-2.2
 - testSearch()           // Buscar paciente específico
-- testCreateOrder()      // Crear orden de prueba  
-- testRegisterSession()  // Registrar sesión
+- testCreateOrder()      // Crear orden de prueba (HU-1.1)
+- testAgenda()           // Testing de agenda y capacidad (HU-1.2)
+- testDashboard()        // Dashboard diario y estadísticas (HU-2.1)
+- testSmartCheckin()     // Check-in inteligente con timing (HU-2.2)
+- testRegisterSession()  // Registrar sesión con metadatos
 - testGenerateBilling()  // Generar presentación
 - forceUpdateData()      // Fix cache de LocalStorage
 ```
+
+**Nuevas Funciones de Testing:**
+- **testCapacityManagement()**: Verificar gestión de conflictos de horarios
+- **testTimingValidation()**: Validar check-in inteligente con diferentes casos
+- **testDashboardStats()**: Estadísticas en tiempo real del dashboard
+- **testNotificationSystem()**: Sistema de notificaciones integrado
 
 ### 🔧 Herramientas de Consola
 
@@ -454,7 +529,7 @@ Resolves #123
 
 - **[📖 POC Detallado](docs/POC.md)** - Documentación técnica completa del POC
 - **[⚙️ Configuración Claude](/.claude/Claude.md)** - Guía para Claude Code IDE  
-- **[🧪 Testing](test.html)** - Página interactiva de pruebas
+- **[🧪 Testing](test.html)** - Suite de pruebas para HU-1.1 a HU-2.2
 
 ### Arquitectura de Carpetas
 

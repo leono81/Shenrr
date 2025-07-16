@@ -170,6 +170,41 @@ GestorOrdenes.data = {
             dni: '01234567',
             obraSocial_id: 5,
             numeroAfiliado: 'PART-012345'
+        },
+        {
+            id: 11,
+            nombreCompleto: 'Carmen Rosa Jiménez',
+            dni: '11223344',
+            obraSocial_id: 2,
+            numeroAfiliado: 'GAL-112233'
+        },
+        {
+            id: 12,
+            nombreCompleto: 'Fernando José Castro',
+            dni: '22334455',
+            obraSocial_id: 3,
+            numeroAfiliado: 'MED-223344'
+        },
+        {
+            id: 13,
+            nombreCompleto: 'Gabriela Beatriz Romero',
+            dni: '33445566',
+            obraSocial_id: 1,
+            numeroAfiliado: 'SM-334455'
+        },
+        {
+            id: 14,
+            nombreCompleto: 'Horacio Daniel Mendez',
+            dni: '44556677',
+            obraSocial_id: 4,
+            numeroAfiliado: 'SAN-445566'
+        },
+        {
+            id: 15,
+            nombreCompleto: 'Isabel María Vargas',
+            dni: '55667788',
+            obraSocial_id: 2,
+            numeroAfiliado: 'GAL-556677'
         }
     ],
 
@@ -490,6 +525,87 @@ GestorOrdenes.data = {
                 programacion_tipo: 'personalizada',
                 hora_sesiones: '10:30',
                 fecha_primera_sesion: '2025-07-17'
+            },
+            // Órdenes adicionales para crear conflictos de horario
+            {
+                id: 10,
+                profesional_id: 1,
+                paciente_id: 11,
+                obraSocial_id: 2,
+                medicoDerivante_id: 2,
+                practica_id: 2,
+                fechaEmision: '2025-07-16',
+                cantidadSesionesTotal: 6,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación - MISMO HORARIO que orden 5
+                programacion_tipo: 'habiles',
+                hora_sesiones: '11:00',
+                fecha_primera_sesion: '2025-07-16'
+            },
+            {
+                id: 11,
+                profesional_id: 1,
+                paciente_id: 12,
+                obraSocial_id: 3,
+                medicoDerivante_id: 3,
+                practica_id: 4,
+                fechaEmision: '2025-07-15',
+                cantidadSesionesTotal: 8,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación - MISMO HORARIO que orden 6
+                programacion_tipo: 'mtj',
+                hora_sesiones: '15:00',
+                fecha_primera_sesion: '2025-07-16'
+            },
+            {
+                id: 12,
+                profesional_id: 1,
+                paciente_id: 13,
+                obraSocial_id: 1,
+                medicoDerivante_id: 4,
+                practica_id: 3,
+                fechaEmision: '2025-07-16',
+                cantidadSesionesTotal: 5,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación - MISMO HORARIO que otras (15:00)
+                programacion_tipo: 'habiles',
+                hora_sesiones: '15:00',
+                fecha_primera_sesion: '2025-07-16'
+            },
+            {
+                id: 13,
+                profesional_id: 1,
+                paciente_id: 14,
+                obraSocial_id: 4,
+                medicoDerivante_id: 5,
+                practica_id: 1,
+                fechaEmision: '2025-07-16',
+                cantidadSesionesTotal: 7,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación - HORARIO SATURADO (09:00)
+                programacion_tipo: 'lmv',
+                hora_sesiones: '09:00',
+                fecha_primera_sesion: '2025-07-17'
+            },
+            {
+                id: 14,
+                profesional_id: 1,
+                paciente_id: 15,
+                obraSocial_id: 2,
+                medicoDerivante_id: 1,
+                practica_id: 5,
+                fechaEmision: '2025-07-16',
+                cantidadSesionesTotal: 6,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación - CREAR SATURACIÓN EN 11:00
+                programacion_tipo: 'habiles',
+                hora_sesiones: '11:00',
+                fecha_primera_sesion: '2025-07-16'
             }
         ],
 
@@ -1081,6 +1197,139 @@ GestorOrdenes.data = {
                 fecha_real: null,
                 hora_real: null,
                 tipo_atencion: 'programada'
+            },
+            
+            // *** SESIONES PARA CREAR CONFLICTOS DE HORARIO ***
+            
+            // Orden 10 (Carmen Rosa Jiménez) - Conflicto en 11:00 con Roberto Carlos Díaz
+            {
+                id: 45,
+                orden_id: 10,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '11:00', // CONFLICTO: mismo horario que sesión id: 32
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            
+            // Orden 11 (Fernando José Castro) - Conflicto en 15:00 con Silvia Elena Torres
+            {
+                id: 46,
+                orden_id: 11,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '15:00', // CONFLICTO: mismo horario que sesión id: 33
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            
+            // Orden 12 (Gabriela Beatriz Romero) - TERCER paciente en 15:00 - CAPACIDAD MEDIA
+            {
+                id: 47,
+                orden_id: 12,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '15:00', // TERCER paciente en 15:00
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            
+            // Orden 14 (Isabel María Vargas) - TERCER paciente en 11:00 - CAPACIDAD MEDIA
+            {
+                id: 48,
+                orden_id: 14,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '11:00', // TERCER paciente en 11:00
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            
+            // *** SESIONES PARA MAÑANA (17 de julio) - CREAR SATURACIÓN ***
+            
+            // Crear SATURACIÓN en 09:00 el 17 de julio (4-5 pacientes)
+            {
+                id: 49,
+                orden_id: 13,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '09:00', // Con sesión id: 39, serán 2
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 50,
+                orden_id: 10,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '09:00', // Tercer paciente en 09:00
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 51,
+                orden_id: 11,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '09:00', // Cuarto paciente en 09:00
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 52,
+                orden_id: 12,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '09:00', // QUINTO paciente en 09:00 - CAPACIDAD ALTA (ROJO)
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            
+            // Crear capacidad media en 11:00 el 17 de julio
+            {
+                id: 53,
+                orden_id: 14,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '11:00', // Con sesiones 38, 37 = 3 pacientes (amarillo)
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             }
         ]
     },
@@ -1093,12 +1342,13 @@ GestorOrdenes.data = {
         if (GestorOrdenes.storage.isInitialized()) {
             console.log('Datos ya inicializados - verificando integridad...');
             
-            // Verificar si tenemos las órdenes actuales (ID 4-9 con fechas de julio 2025)
-            const orden4 = GestorOrdenes.storage.ordenes.getById(4);
+            // Verificar si tenemos las órdenes actuales y sesiones con conflictos
+            const orden10 = GestorOrdenes.storage.ordenes.getById(10);
             const sesionesHoy = GestorOrdenes.storage.sesiones.getAll()
                 .filter(s => s.fecha_programada === '2025-07-16');
+            const sesiones11am = sesionesHoy.filter(s => s.hora_programada === '11:00');
             
-            if (!orden4 || sesionesHoy.length < 3) {
+            if (!orden10 || sesiones11am.length < 3) {
                 console.log('Datos desactualizados detectados - ejecutando actualización forzada...');
                 this.forceUpdate();
                 return;
@@ -1157,6 +1407,6 @@ GestorOrdenes.data = {
         // Marcar como inicializado
         GestorOrdenes.storage.markInitialized();
         
-        console.log('Datos actualizados forzosamente - Ahora tienes citas programadas para hoy (16/7/2025)');
+        console.log('Datos actualizados forzosamente - Conflictos de horario y capacidad agregados para demostración');
     }
 };

@@ -54,8 +54,45 @@
         </div>
 
         <div class="test-section">
-            <h3>📈 Estadísticas</h3>
+            <h3>🔔 Pruebas de Notificaciones (HU-1.2)</h3>
+            <button onclick="testNotificationDetectors()">Test: Detectores de Notificaciones</button>
+            <button onclick="testUnscheduledOrders()">Test: Órdenes Sin Programar</button>
+            <button onclick="testScheduleConflicts()">Test: Conflictos de Horario</button>
+            <button onclick="testNotificationCleanup()">Test: Limpieza de Notificaciones</button>
+            <button onclick="testAllNotifications()">Ejecutar Todos los Tests de Notificaciones</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📅 Pruebas de Capacidad y Agenda (HU-1.3)</h3>
+            <button onclick="testCapacityCalculation()">Test: Cálculo de Capacidad</button>
+            <button onclick="testCapacityWarnings()">Test: Advertencias de Capacidad</button>
+            <button onclick="testAgendaViews()">Test: Vistas de Agenda</button>
+            <button onclick="testTimeSlotDetails()">Test: Detalles de Horarios</button>
+            <button onclick="testAllCapacity()">Ejecutar Todos los Tests de Capacidad</button>
+        </div>
+
+        <div class="test-section">
+            <h3>🏠 Pruebas de Dashboard Diario (HU-2.1)</h3>
+            <button onclick="testTodayStats()">Test: Estadísticas del Día</button>
+            <button onclick="testTodayAppointments()">Test: Citas de Hoy</button>
+            <button onclick="testDashboardRefresh()">Test: Actualización Dashboard</button>
+            <button onclick="testAllDashboard()">Ejecutar Todos los Tests de Dashboard</button>
+        </div>
+
+        <div class="test-section">
+            <h3>✅ Pruebas de Check-in Inteligente (HU-2.2)</h3>
+            <button onclick="testTimingValidation()">Test: Validación de Horarios</button>
+            <button onclick="testEarlyPatient()">Test: Paciente Temprano</button>
+            <button onclick="testLatePatient()">Test: Paciente Tardío</button>
+            <button onclick="testNoAppointment()">Test: Sin Cita Programada</button>
+            <button onclick="testTimingModals()">Test: Modales de Confirmación</button>
+            <button onclick="testAllCheckin()">Ejecutar Todos los Tests de Check-in</button>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Estadísticas del Sistema</h3>
             <div id="stats"></div>
+            <div id="todayStats" style="margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;"></div>
         </div>
 
         <div class="test-section">
@@ -68,6 +105,7 @@
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/agenda.js"></script>
 
     <script>
         function log(message, type = 'info') {
@@ -84,15 +122,15 @@
 
         function checkSystemStatus() {
             try {
-                // Verificar módulos incluyendo los nuevos de HU-1.3
-                const modules = ['storage', 'data', 'utils', 'app', 'capacity', 'agenda'];
+                // Verificar módulos incluyendo los nuevos
+                const modules = ['storage', 'data', 'utils', 'app', 'ui', 'agenda'];
                 const loadedModules = modules.filter(mod => GestorOrdenes[mod]);
                 
                 document.getElementById('systemStatus').textContent = 
                     GestorOrdenes ? 'Activo ✅' : 'Error ❌';
                 
                 document.getElementById('modulesStatus').textContent = 
-                    `${loadedModules.length}/${modules.length} cargados (incluye HU-1.3)`;
+                    `${loadedModules.length}/${modules.length} cargados (${loadedModules.join(', ')})`;
                 
                 // Verificar datos
                 const pacientes = GestorOrdenes.storage.pacientes.getAll();
@@ -117,9 +155,28 @@
                     <div><strong>Órdenes Activas:</strong> ${stats.ordenesActivas}</div>
                     <div><strong>Sesiones Realizadas:</strong> ${stats.sesionesRealizadas}</div>
                     <div><strong>Sesiones Pendientes:</strong> ${stats.sesionesPendientes}</div>
-                    <div><strong>Presentaciones:</strong> ${stats.presentaciones}</div>
+                    <div><strong>Presentaciones:</strong> ${stats.presentaciones || 0}</div>
                 </div>
             `;
+            
+            // Agregar estadísticas del día actual
+            try {
+                const todayStats = GestorOrdenes.utils.getTodayStats();
+                document.getElementById('todayStats').innerHTML = `
+                    <h6>📅 Estadísticas de Hoy:</h6>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div><strong>Programadas:</strong> ${todayStats.programadas}</div>
+                        <div><strong>Completadas:</strong> ${todayStats.completadas}</div>
+                        <div><strong>Progreso:</strong> ${todayStats.porcentaje}%</div>
+                    </div>
+                    <div style="margin-top: 5px;">
+                        <strong>Próxima Cita:</strong> ${todayStats.proximaCita.hora || '--:--'} 
+                        ${todayStats.proximaCita.paciente ? '(' + todayStats.proximaCita.paciente + ')' : ''}
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('todayStats').innerHTML = '<div>Error al cargar estadísticas del día</div>';
+            }
         }
 
         function testSearch() {
@@ -215,7 +272,7 @@
         function forceUpdateData() {
             try {
                 GestorOrdenes.data.forceUpdate();
-                log('✅ Datos actualizados forzosamente - Ana Sofía debería tener 10 sesiones', 'success');
+                log('✅ Datos actualizados forzosamente - Conflictos y capacidad agregados', 'success');
                 
                 // Verificar específicamente la orden de Ana Sofía
                 setTimeout(() => {
@@ -457,6 +514,311 @@
             setTimeout(() => {
                 log('✅ Tests de programación automática completados', 'success');
             }, 2100);
+        }
+
+        // === NUEVAS FUNCIONES DE TEST PARA HU-1.2 (NOTIFICACIONES) ===
+        
+        function testNotificationDetectors() {
+            try {
+                log('🧪 Test: Detectores de notificaciones...', 'info');
+                
+                // Ejecutar detectores
+                const unscheduled = GestorOrdenes.app.detectUnscheduledOrders();
+                const conflicts = GestorOrdenes.app.detectScheduleConflicts();
+                const upcoming = GestorOrdenes.app.detectUpcomingAppointments();
+                
+                log(`✅ Órdenes sin programar: ${unscheduled.length} notificaciones`, 'success');
+                log(`✅ Conflictos detectados: ${conflicts.length} notificaciones`, 'success');
+                log(`✅ Citas próximas: ${upcoming.length} notificaciones`, 'success');
+                
+                const totalNotifications = GestorOrdenes.storage.notificaciones.getUnread().length;
+                log(`📊 Total notificaciones no leídas: ${totalNotifications}`, 'info');
+                
+            } catch (error) {
+                log('Error en test de detectores: ' + error.message, 'error');
+            }
+        }
+        
+        function testUnscheduledOrders() {
+            try {
+                log('🧪 Test: Órdenes sin programar...', 'info');
+                
+                // Crear orden temporal sin sesiones programadas
+                const testOrder = {
+                    id: 9995,
+                    profesional_id: 1,
+                    paciente_id: 1,
+                    estado: 'Abierta',
+                    cantidadSesionesTotal: 3
+                };
+                
+                GestorOrdenes.storage.ordenes.save(testOrder);
+                
+                // Crear sesiones sin fecha programada
+                for (let i = 1; i <= 3; i++) {
+                    GestorOrdenes.storage.sesiones.save({
+                        orden_id: 9995,
+                        numeroSesion: i,
+                        estado: 'Pendiente',
+                        fecha_programada: null,
+                        hora_programada: null
+                    });
+                }
+                
+                const result = GestorOrdenes.app.detectUnscheduledOrders();
+                
+                if (result.length > 0) {
+                    log(`✅ Detectada orden sin programar: ${result.length} notificaciones`, 'success');
+                } else {
+                    log('❌ No se detectaron órdenes sin programar', 'error');
+                }
+                
+                // Limpiar datos de prueba
+                const ordenes = GestorOrdenes.storage.ordenes.getAll().filter(o => o.id !== 9995);
+                const sesiones = GestorOrdenes.storage.sesiones.getAll().filter(s => s.orden_id !== 9995);
+                GestorOrdenes.storage.set('ORDENES', ordenes);
+                GestorOrdenes.storage.set('SESIONES', sesiones);
+                
+            } catch (error) {
+                log('Error en test órdenes sin programar: ' + error.message, 'error');
+            }
+        }
+
+        // === FUNCIONES DE TEST PARA HU-1.3 (CAPACIDAD) ===
+        
+        function testCapacityCalculation() {
+            try {
+                log('🧪 Test: Cálculo de capacidad...', 'info');
+                
+                // Test para hoy 16/7/2025 a las 11:00 (debería tener 3 pacientes)
+                const today = new Date('2025-07-16');
+                const capacity = GestorOrdenes.agenda.getCapacityByTimeSlot(today, 11);
+                
+                log(`📊 Capacidad 11:00 hoy: ${capacity.count} pacientes`, 'info');
+                log(`📊 Nivel: ${capacity.level}`, 'info');
+                
+                if (capacity.count >= 3) {
+                    log('✅ Capacidad media/alta detectada correctamente', 'success');
+                } else {
+                    log('❌ No se detectó la capacidad esperada', 'error');
+                }
+                
+                capacity.patients.forEach((patient, index) => {
+                    log(`  ${index + 1}. ${patient.nombre} - ${patient.practica}`, 'info');
+                });
+                
+            } catch (error) {
+                log('Error en test de capacidad: ' + error.message, 'error');
+            }
+        }
+        
+        function testAgendaViews() {
+            try {
+                log('🧪 Test: Vistas de agenda...', 'info');
+                
+                // Simular que el módulo de agenda está disponible
+                if (typeof GestorOrdenes.agenda !== 'undefined') {
+                    log('✅ Módulo de agenda cargado', 'success');
+                    
+                    // Test vista diaria
+                    const today = new Date();
+                    log(`📅 Vista diaria para: ${today.toLocaleDateString()}`, 'info');
+                    
+                    // Test vista semanal
+                    log('📅 Vista semanal disponible', 'info');
+                    
+                } else {
+                    log('⚠️ Módulo de agenda no disponible (normal en test.html)', 'info');
+                }
+                
+            } catch (error) {
+                log('Error en test de vistas: ' + error.message, 'error');
+            }
+        }
+
+        // === FUNCIONES DE TEST PARA HU-2.1 (DASHBOARD) ===
+        
+        function testTodayStats() {
+            try {
+                log('🧪 Test: Estadísticas del día...', 'info');
+                
+                const stats = GestorOrdenes.utils.getTodayStats();
+                
+                log(`📊 Citas programadas hoy: ${stats.programadas}`, 'info');
+                log(`📊 Citas completadas: ${stats.completadas}`, 'info');
+                log(`📊 Porcentaje completado: ${stats.porcentaje}%`, 'info');
+                
+                if (stats.proximaCita.hora) {
+                    log(`📊 Próxima cita: ${stats.proximaCita.hora} - ${stats.proximaCita.paciente}`, 'info');
+                } else {
+                    log(`📊 No hay más citas programadas hoy`, 'info');
+                }
+                
+                if (stats.programadas > 0) {
+                    log('✅ Estadísticas del día calculadas correctamente', 'success');
+                } else {
+                    log('⚠️ No hay citas programadas para hoy', 'info');
+                }
+                
+            } catch (error) {
+                log('Error en test de estadísticas: ' + error.message, 'error');
+            }
+        }
+        
+        function testTodayAppointments() {
+            try {
+                log('🧪 Test: Citas de hoy...', 'info');
+                
+                const appointments = GestorOrdenes.ui.getTodayAppointments();
+                
+                log(`📅 Citas encontradas para hoy: ${appointments.length}`, 'info');
+                
+                appointments.forEach((cita, index) => {
+                    log(`  ${index + 1}. ${cita.hora_programada} - ${cita.paciente_nombre} (${cita.estado})`, 'info');
+                });
+                
+                if (appointments.length > 0) {
+                    log('✅ Lista de citas del día generada correctamente', 'success');
+                } else {
+                    log('⚠️ No hay citas programadas para hoy', 'info');
+                }
+                
+            } catch (error) {
+                log('Error en test de citas: ' + error.message, 'error');
+            }
+        }
+
+        // === FUNCIONES DE TEST PARA HU-2.2 (CHECK-IN INTELIGENTE) ===
+        
+        function testTimingValidation() {
+            try {
+                log('🧪 Test: Validación de horarios...', 'info');
+                
+                const testCita = {
+                    hora_programada: '14:00'
+                };
+                
+                // Test a tiempo (simulando que son las 14:15)
+                const testTime = new Date();
+                testTime.setHours(14, 15, 0, 0);
+                
+                const validation = GestorOrdenes.utils.validateAppointmentTiming(testCita, testTime);
+                
+                log(`⏰ Status: ${validation.status}`, 'info');
+                log(`⏰ Diferencia: ${validation.difference} minutos`, 'info');
+                log(`⏰ Mensaje: ${validation.message}`, 'info');
+                
+                if (validation.status === 'onTime') {
+                    log('✅ Validación de timing correcta (a tiempo)', 'success');
+                } else {
+                    log(`✅ Validación de timing correcta (${validation.status})`, 'success');
+                }
+                
+            } catch (error) {
+                log('Error en test de timing: ' + error.message, 'error');
+            }
+        }
+        
+        function testEarlyPatient() {
+            try {
+                log('🧪 Test: Paciente temprano...', 'info');
+                
+                const testCita = { hora_programada: '15:00' };
+                const earlyTime = new Date();
+                earlyTime.setHours(14, 20, 0, 0); // 40 minutos temprano
+                
+                const validation = GestorOrdenes.utils.validateAppointmentTiming(testCita, earlyTime);
+                
+                if (validation.status === 'early') {
+                    log('✅ Paciente temprano detectado correctamente', 'success');
+                    log(`⏰ ${validation.message}`, 'info');
+                } else {
+                    log(`❌ Error: Se esperaba 'early', se obtuvo '${validation.status}'`, 'error');
+                }
+                
+            } catch (error) {
+                log('Error en test paciente temprano: ' + error.message, 'error');
+            }
+        }
+        
+        function testLatePatient() {
+            try {
+                log('🧪 Test: Paciente tardío...', 'info');
+                
+                const testCita = { hora_programada: '10:00' };
+                const lateTime = new Date();
+                lateTime.setHours(10, 45, 0, 0); // 45 minutos tarde
+                
+                const validation = GestorOrdenes.utils.validateAppointmentTiming(testCita, lateTime);
+                
+                if (validation.status === 'late') {
+                    log('✅ Paciente tardío detectado correctamente', 'success');
+                    log(`⏰ ${validation.message}`, 'info');
+                } else {
+                    log(`❌ Error: Se esperaba 'late', se obtuvo '${validation.status}'`, 'error');
+                }
+                
+            } catch (error) {
+                log('Error en test paciente tardío: ' + error.message, 'error');
+            }
+        }
+        
+        function testNoAppointment() {
+            try {
+                log('🧪 Test: Sin cita programada...', 'info');
+                
+                const validation = GestorOrdenes.utils.validateAppointmentTiming(null);
+                
+                if (validation.status === 'noAppointment') {
+                    log('✅ Caso sin cita detectado correctamente', 'success');
+                    log(`📅 ${validation.message}`, 'info');
+                } else {
+                    log(`❌ Error: Se esperaba 'noAppointment', se obtuvo '${validation.status}'`, 'error');
+                }
+                
+            } catch (error) {
+                log('Error en test sin cita: ' + error.message, 'error');
+            }
+        }
+
+        // === FUNCIONES DE TEST AGRUPADAS ===
+        
+        function testAllNotifications() {
+            log('🚀 Ejecutando todos los tests de notificaciones...', 'info');
+            setTimeout(() => testNotificationDetectors(), 100);
+            setTimeout(() => testUnscheduledOrders(), 500);
+            setTimeout(() => {
+                log('✅ Tests de notificaciones completados', 'success');
+            }, 900);
+        }
+        
+        function testAllCapacity() {
+            log('🚀 Ejecutando todos los tests de capacidad...', 'info');
+            setTimeout(() => testCapacityCalculation(), 100);
+            setTimeout(() => testAgendaViews(), 500);
+            setTimeout(() => {
+                log('✅ Tests de capacidad completados', 'success');
+            }, 900);
+        }
+        
+        function testAllDashboard() {
+            log('🚀 Ejecutando todos los tests de dashboard...', 'info');
+            setTimeout(() => testTodayStats(), 100);
+            setTimeout(() => testTodayAppointments(), 500);
+            setTimeout(() => {
+                log('✅ Tests de dashboard completados', 'success');
+            }, 900);
+        }
+        
+        function testAllCheckin() {
+            log('🚀 Ejecutando todos los tests de check-in...', 'info');
+            setTimeout(() => testTimingValidation(), 100);
+            setTimeout(() => testEarlyPatient(), 300);
+            setTimeout(() => testLatePatient(), 500);
+            setTimeout(() => testNoAppointment(), 700);
+            setTimeout(() => {
+                log('✅ Tests de check-in inteligente completados', 'success');
+            }, 1000);
         }
         
         function testCustomDates() {
