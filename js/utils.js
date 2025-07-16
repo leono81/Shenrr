@@ -97,9 +97,108 @@ GestorOrdenes.utils = {
     // Capitalizar cada palabra
     capitalizeWords: function(str) {
         if (!str) return '';
-        return str.replace(/\w\S*/g, (txt) => 
-            txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-        );
+        return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    },
+
+    // === NUEVAS FUNCIONES PARA PROGRAMACIÓN AUTOMÁTICA ===
+    
+    // Calcular días hábiles (Lun-Vie)
+    calculateBusinessDays: function(startDate, sessions) {
+        const dates = [];
+        const start = new Date(startDate);
+        let currentDate = new Date(start);
+        
+        while (dates.length < sessions) {
+            // Obtener día de la semana (0=Domingo, 1=Lunes, ..., 6=Sábado)
+            const dayOfWeek = currentDate.getDay();
+            
+            // Si es día hábil (Lunes a Viernes)
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                dates.push(new Date(currentDate));
+            }
+            
+            // Avanzar al siguiente día
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        return dates;
+    },
+    
+    // Calcular programación LMV (Lunes, Miércoles, Viernes)
+    calculateMWFSchedule: function(startDate, sessions) {
+        const dates = [];
+        const start = new Date(startDate);
+        let currentDate = new Date(start);
+        
+        while (dates.length < sessions) {
+            const dayOfWeek = currentDate.getDay();
+            
+            // Si es Lunes (1), Miércoles (3) o Viernes (5)
+            if (dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5) {
+                dates.push(new Date(currentDate));
+            }
+            
+            // Avanzar al siguiente día
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        return dates;
+    },
+    
+    // Calcular programación MTJ (Martes, Jueves)
+    calculateTTSchedule: function(startDate, sessions) {
+        const dates = [];
+        const start = new Date(startDate);
+        let currentDate = new Date(start);
+        
+        while (dates.length < sessions) {
+            const dayOfWeek = currentDate.getDay();
+            
+            // Si es Martes (2) o Jueves (4)
+            if (dayOfWeek === 2 || dayOfWeek === 4) {
+                dates.push(new Date(currentDate));
+            }
+            
+            // Avanzar al siguiente día
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        
+        return dates;
+    },
+    
+    // Validar conflictos de tiempo entre sesiones
+    validateTimeConflicts: function(newSessions, existingSessions) {
+        const conflicts = [];
+        
+        newSessions.forEach(newSession => {
+            const conflictingSessions = existingSessions.filter(existing => {
+                // Comparar misma fecha y hora
+                return existing.fecha_programada === newSession.fecha_programada && 
+                       existing.hora_programada === newSession.hora_programada &&
+                       existing.id !== newSession.id; // No comparar consigo mismo
+            });
+            
+            if (conflictingSessions.length > 0) {
+                conflicts.push({
+                    newSession: newSession,
+                    conflicts: conflictingSessions
+                });
+            }
+        });
+        
+        return conflicts;
+    },
+    
+    // Formatear fecha para almacenamiento (YYYY-MM-DD)
+    formatDateForStorage: function(date) {
+        if (!date) return null;
+        
+        const d = date instanceof Date ? date : new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}`;
     },
 
     // Generar ID único
@@ -265,6 +364,97 @@ GestorOrdenes.utils = {
         };
     },
 
+    // Obtener estadísticas del día actual
+    getTodayStats: function() {
+        const today = new Date();
+        const fechaHoy = this.formatDateForStorage(today);
+        
+        const sesionesHoy = GestorOrdenes.storage.sesiones.getAll()
+            .filter(sesion => {
+                return sesion.fecha_programada === fechaHoy && 
+                       sesion.profesional_id === 1; // POC: usuario fijo
+            });
+
+        const programadas = sesionesHoy.length;
+        const completadas = sesionesHoy.filter(s => s.estado === 'Realizada').length;
+        const porcentaje = programadas > 0 ? Math.round((completadas / programadas) * 100) : 0;
+
+        // Buscar próxima cita pendiente
+        const now = new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        
+        const proximasCitas = sesionesHoy
+            .filter(sesion => sesion.estado === 'Pendiente')
+            .map(sesion => {
+                const [horaStr, minutoStr] = sesion.hora_programada.split(':');
+                const appointmentTime = parseInt(horaStr) * 60 + parseInt(minutoStr);
+                return {
+                    sesion,
+                    appointmentTime,
+                    isNext: appointmentTime > currentTime
+                };
+            })
+            .filter(item => item.isNext)
+            .sort((a, b) => a.appointmentTime - b.appointmentTime);
+
+        let proximaCita = { hora: null, paciente: null };
+        if (proximasCitas.length > 0) {
+            const nextSession = proximasCitas[0].sesion;
+            const orden = GestorOrdenes.storage.ordenes.getById(nextSession.orden_id);
+            const paciente = GestorOrdenes.storage.pacientes.getById(orden.paciente_id);
+            
+            proximaCita = {
+                hora: nextSession.hora_programada,
+                paciente: paciente.nombreCompleto
+            };
+        }
+
+        return {
+            programadas,
+            completadas,
+            porcentaje,
+            proximaCita
+        };
+    },
+
+    // Validar timing de cita
+    validateAppointmentTiming: function(cita, horaActual) {
+        if (!cita || !cita.hora_programada) {
+            return {
+                status: 'noAppointment',
+                difference: 0,
+                message: '📅 No tiene cita programada para hoy'
+            };
+        }
+
+        const now = horaActual || new Date();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const [horaStr, minutoStr] = cita.hora_programada.split(':');
+        const appointmentTime = parseInt(horaStr) * 60 + parseInt(minutoStr);
+        const difference = currentTime - appointmentTime;
+        
+        // Ventana de tolerancia: ±30 minutos
+        if (Math.abs(difference) <= 30) {
+            return {
+                status: 'onTime',
+                difference: difference,
+                message: `✅ Cita programada para las ${cita.hora_programada}`
+            };
+        } else if (difference < -30) {
+            return {
+                status: 'early',
+                difference: difference,
+                message: `⏰ Llegó temprano - Cita programada para las ${cita.hora_programada}`
+            };
+        } else {
+            return {
+                status: 'late',
+                difference: difference,
+                message: `⏰ Llegó tarde - Cita programada para las ${cita.hora_programada}`
+            };
+        }
+    },
+
     // Filtrar órdenes por criterios
     filterOrders: function(orders, criteria) {
         return orders.filter(order => {
@@ -369,5 +559,36 @@ GestorOrdenes.utils = {
     isDateInPeriod: function(date, year, month) {
         const d = new Date(date);
         return d.getFullYear() === year && (d.getMonth() + 1) === month;
+    },
+
+    // Obtener nombre del día de la semana
+    getDayName: function(date) {
+        const days = [
+            'Domingo', 'Lunes', 'Martes', 'Miércoles', 
+            'Jueves', 'Viernes', 'Sábado'
+        ];
+        const d = date instanceof Date ? date : new Date(date);
+        return days[d.getDay()];
+    },
+
+    // Obtener nombre del día abreviado
+    getDayNameShort: function(date) {
+        const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const d = date instanceof Date ? date : new Date(date);
+        return days[d.getDay()];
+    },
+
+    // Formatear hora para mostrar (HH:MM)
+    formatTime: function(time) {
+        if (!time) return '--:--';
+        return time;
+    },
+
+    // Obtener color por capacidad de citas
+    getCapacityColor: function(count) {
+        if (count === 0) return 'secondary';
+        if (count <= 2) return 'success';
+        if (count <= 4) return 'warning';
+        return 'danger';
     }
 };

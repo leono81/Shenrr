@@ -135,6 +135,41 @@ GestorOrdenes.data = {
             dni: '56789012',
             obraSocial_id: 4,
             numeroAfiliado: 'SAN-567890'
+        },
+        {
+            id: 6,
+            nombreCompleto: 'Roberto Carlos Díaz',
+            dni: '67890123',
+            obraSocial_id: 1,
+            numeroAfiliado: 'SM-678901'
+        },
+        {
+            id: 7,
+            nombreCompleto: 'Silvia Elena Torres',
+            dni: '78901234',
+            obraSocial_id: 2,
+            numeroAfiliado: 'GAL-789012'
+        },
+        {
+            id: 8,
+            nombreCompleto: 'Miguel Ángel Herrera',
+            dni: '89012345',
+            obraSocial_id: 3,
+            numeroAfiliado: 'MED-890123'
+        },
+        {
+            id: 9,
+            nombreCompleto: 'Patricia Mónica Vega',
+            dni: '90123456',
+            obraSocial_id: 1,
+            numeroAfiliado: 'SM-901234'
+        },
+        {
+            id: 10,
+            nombreCompleto: 'Alejandro Fabián Morales',
+            dni: '01234567',
+            obraSocial_id: 5,
+            numeroAfiliado: 'PART-012345'
         }
     ],
 
@@ -285,6 +320,29 @@ GestorOrdenes.data = {
         }
     ],
 
+    // Notificaciones para el sistema de alertas (HU-1.2)
+    notificaciones: [
+        // Ejemplos para testing del sistema de notificaciones
+        {
+            id: 1,
+            tipo: 'orden_sin_programar',
+            mensaje: 'La orden #4 no tiene sesiones programadas',
+            orden_id: 4,
+            fecha_creacion: '2025-07-16T10:00:00.000Z',
+            leida: false,
+            accion_url: 'pages/ordenes.html?orden=4'
+        },
+        {
+            id: 2,
+            tipo: 'conflicto_horario',
+            mensaje: 'Conflicto de horario detectado el 2025-07-18 a las 14:00',
+            orden_id: null,
+            fecha_creacion: '2025-07-16T11:30:00.000Z',
+            leida: false,
+            accion_url: 'pages/agenda.html?fecha=2025-07-18'
+        }
+    ],
+
     // Datos de ejemplo para testing
     ejemplos: {
         ordenes: [
@@ -298,7 +356,11 @@ GestorOrdenes.data = {
                 fechaEmision: '2025-06-15',
                 cantidadSesionesTotal: 10,
                 estado: 'Abierta',
-                fechaCierre: null
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'habiles',
+                hora_sesiones: '14:00',
+                fecha_primera_sesion: '2025-06-16'
             },
             {
                 id: 2,
@@ -310,7 +372,11 @@ GestorOrdenes.data = {
                 fechaEmision: '2025-06-20',
                 cantidadSesionesTotal: 8,
                 estado: 'Abierta',
-                fechaCierre: null
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'lmv',
+                hora_sesiones: '10:00',
+                fecha_primera_sesion: '2025-06-21'
             },
             {
                 id: 3,
@@ -322,7 +388,108 @@ GestorOrdenes.data = {
                 fechaEmision: '2025-06-01',
                 cantidadSesionesTotal: 10,
                 estado: 'Cerrada Normal',
-                fechaCierre: '2025-06-30'
+                fechaCierre: '2025-06-30',
+                // Campos extendidos para programación
+                programacion_tipo: 'mtj',
+                hora_sesiones: '16:00',
+                fecha_primera_sesion: '2025-06-02'
+            },
+            // Órdenes con fechas actuales para mostrar el dashboard
+            {
+                id: 4,
+                profesional_id: 1,
+                paciente_id: 4,
+                obraSocial_id: 1,
+                medicoDerivante_id: 1,
+                practica_id: 1,
+                fechaEmision: '2025-07-10',
+                cantidadSesionesTotal: 12,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'habiles',
+                hora_sesiones: '09:00',
+                fecha_primera_sesion: '2025-07-15'
+            },
+            {
+                id: 5,
+                profesional_id: 1,
+                paciente_id: 6,
+                obraSocial_id: 1,
+                medicoDerivante_id: 2,
+                practica_id: 2,
+                fechaEmision: '2025-07-12',
+                cantidadSesionesTotal: 8,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'lmv',
+                hora_sesiones: '11:00',
+                fecha_primera_sesion: '2025-07-15'
+            },
+            {
+                id: 6,
+                profesional_id: 1,
+                paciente_id: 7,
+                obraSocial_id: 2,
+                medicoDerivante_id: 3,
+                practica_id: 4,
+                fechaEmision: '2025-07-14',
+                cantidadSesionesTotal: 10,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'mtj',
+                hora_sesiones: '15:00',
+                fecha_primera_sesion: '2025-07-16'
+            },
+            {
+                id: 7,
+                profesional_id: 1,
+                paciente_id: 8,
+                obraSocial_id: 3,
+                medicoDerivante_id: 4,
+                practica_id: 3,
+                fechaEmision: '2025-07-16',
+                cantidadSesionesTotal: 6,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'habiles',
+                hora_sesiones: '14:00',
+                fecha_primera_sesion: '2025-07-16'
+            },
+            {
+                id: 8,
+                profesional_id: 1,
+                paciente_id: 9,
+                obraSocial_id: 1,
+                medicoDerivante_id: 5,
+                practica_id: 5,
+                fechaEmision: '2025-07-15',
+                cantidadSesionesTotal: 8,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'lmv',
+                hora_sesiones: '16:30',
+                fecha_primera_sesion: '2025-07-17'
+            },
+            {
+                id: 9,
+                profesional_id: 1,
+                paciente_id: 10,
+                obraSocial_id: 5,
+                medicoDerivante_id: 1,
+                practica_id: 1,
+                fechaEmision: '2025-07-16',
+                cantidadSesionesTotal: 10,
+                estado: 'Abierta',
+                fechaCierre: null,
+                // Campos extendidos para programación
+                programacion_tipo: 'personalizada',
+                hora_sesiones: '10:30',
+                fecha_primera_sesion: '2025-07-17'
             }
         ],
 
@@ -333,70 +500,130 @@ GestorOrdenes.data = {
                 orden_id: 1,
                 numeroSesion: 1,
                 fechaPrestacion: '2025-06-16',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-16',
+                hora_programada: '14:00',
+                fecha_real: '2025-06-16',
+                hora_real: '14:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 2,
                 orden_id: 1,
                 numeroSesion: 2,
                 fechaPrestacion: '2025-06-18',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-17',
+                hora_programada: '14:00',
+                fecha_real: '2025-06-18',
+                hora_real: '14:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 3,
                 orden_id: 1,
                 numeroSesion: 3,
                 fechaPrestacion: '2025-06-20',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-18',
+                hora_programada: '14:00',
+                fecha_real: '2025-06-20',
+                hora_real: '14:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 4,
                 orden_id: 1,
                 numeroSesion: 4,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-19',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 5,
                 orden_id: 1,
                 numeroSesion: 5,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-20',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 6,
                 orden_id: 1,
                 numeroSesion: 6,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-23',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 7,
                 orden_id: 1,
                 numeroSesion: 7,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-24',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 8,
                 orden_id: 1,
                 numeroSesion: 8,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-25',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 9,
                 orden_id: 1,
                 numeroSesion: 9,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-26',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 10,
                 orden_id: 1,
                 numeroSesion: 10,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación
+                fecha_programada: '2025-06-27',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             // Sesiones para orden 2 (Carlos Alberto Fernández)
             {
@@ -404,56 +631,104 @@ GestorOrdenes.data = {
                 orden_id: 2,
                 numeroSesion: 1,
                 fechaPrestacion: '2025-06-21',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-06-21',
+                hora_programada: '10:00',
+                fecha_real: '2025-06-21',
+                hora_real: '10:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 12,
                 orden_id: 2,
                 numeroSesion: 2,
                 fechaPrestacion: '2025-06-23',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-06-23',
+                hora_programada: '10:00',
+                fecha_real: '2025-06-23',
+                hora_real: '10:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 13,
                 orden_id: 2,
                 numeroSesion: 3,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-06-25',
+                hora_programada: '10:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 14,
                 orden_id: 2,
                 numeroSesion: 4,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-06-27',
+                hora_programada: '10:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 15,
                 orden_id: 2,
                 numeroSesion: 5,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-06-30',
+                hora_programada: '10:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 16,
                 orden_id: 2,
                 numeroSesion: 6,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-07-02',
+                hora_programada: '10:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 17,
                 orden_id: 2,
                 numeroSesion: 7,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-07-04',
+                hora_programada: '10:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             {
                 id: 18,
                 orden_id: 2,
                 numeroSesion: 8,
                 fechaPrestacion: null,
-                estado: 'Pendiente'
+                estado: 'Pendiente',
+                // Campos extendidos para programación (LMV - Lunes, Miércoles, Viernes)
+                fecha_programada: '2025-07-07',
+                hora_programada: '10:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             },
             // Sesiones para orden 3 (Ana Sofía Martínez) - 10 sesiones realizadas
             {
@@ -461,70 +736,351 @@ GestorOrdenes.data = {
                 orden_id: 3,
                 numeroSesion: 1,
                 fechaPrestacion: '2025-06-02',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-02',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-02',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 20,
                 orden_id: 3,
                 numeroSesion: 2,
                 fechaPrestacion: '2025-06-04',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-04',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-04',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 21,
                 orden_id: 3,
                 numeroSesion: 3,
                 fechaPrestacion: '2025-06-06',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-06',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-06',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 22,
                 orden_id: 3,
                 numeroSesion: 4,
                 fechaPrestacion: '2025-06-09',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-09',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-09',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 23,
                 orden_id: 3,
                 numeroSesion: 5,
                 fechaPrestacion: '2025-06-11',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-11',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-11',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 24,
                 orden_id: 3,
                 numeroSesion: 6,
                 fechaPrestacion: '2025-06-13',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-13',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-13',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 25,
                 orden_id: 3,
                 numeroSesion: 7,
                 fechaPrestacion: '2025-06-16',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-16',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-16',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 26,
                 orden_id: 3,
                 numeroSesion: 8,
                 fechaPrestacion: '2025-06-18',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-18',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-18',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 27,
                 orden_id: 3,
                 numeroSesion: 9,
                 fechaPrestacion: '2025-06-20',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-20',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-20',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
             },
             {
                 id: 28,
                 orden_id: 3,
                 numeroSesion: 10,
                 fechaPrestacion: '2025-06-23',
-                estado: 'Realizada'
+                estado: 'Realizada',
+                // Campos extendidos para programación (MTJ - Martes, Jueves)
+                fecha_programada: '2025-06-23',
+                hora_programada: '16:00',
+                fecha_real: '2025-06-23',
+                hora_real: '16:00',
+                tipo_atencion: 'programada'
+            },
+            
+            // *** SESIONES PARA ÓRDENES ACTUALES - JULIO 2025 ***
+            
+            // Sesiones para orden 4 (Pedro Luis García) - Habiles 09:00
+            {
+                id: 29,
+                orden_id: 4,
+                numeroSesion: 1,
+                fechaPrestacion: '2025-07-15',
+                estado: 'Realizada',
+                profesional_id: 1,
+                fecha_programada: '2025-07-15',
+                hora_programada: '09:00',
+                fecha_real: '2025-07-15',
+                hora_real: '09:00',
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 30,
+                orden_id: 4,
+                numeroSesion: 2,
+                fechaPrestacion: '2025-07-16',
+                estado: 'Realizada',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '09:00',
+                fecha_real: '2025-07-16',
+                hora_real: '09:05',
+                tipo_atencion: 'programada',
+                cambio_horario: true,
+                motivo_cambio: 'atraso'
+            },
+            // Sesiones para HOY (16 de julio) - Diferentes horarios
+            {
+                id: 31,
+                orden_id: 4,
+                numeroSesion: 3,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '09:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 32,
+                orden_id: 5,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '11:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 33,
+                orden_id: 6,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '15:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 34,
+                orden_id: 7,
+                numeroSesion: 1,
+                fechaPrestacion: '2025-07-16',
+                estado: 'Realizada',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '14:00',
+                fecha_real: '2025-07-16',
+                hora_real: '13:45',
+                tipo_atencion: 'programada',
+                cambio_horario: true,
+                motivo_cambio: 'adelanto'
+            },
+            {
+                id: 35,
+                orden_id: 8,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-16',
+                hora_programada: '16:30',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            
+            // Sesiones para el día siguiente (17 de julio) - Próximas citas
+            {
+                id: 36,
+                orden_id: 8,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '16:30',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 37,
+                orden_id: 9,
+                numeroSesion: 1,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '10:30',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 38,
+                orden_id: 5,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '11:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            
+            // Más sesiones programadas para la semana
+            {
+                id: 39,
+                orden_id: 4,
+                numeroSesion: 4,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '09:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 40,
+                orden_id: 6,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-17',
+                hora_programada: '15:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 41,
+                orden_id: 4,
+                numeroSesion: 5,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-18',
+                hora_programada: '09:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 42,
+                orden_id: 7,
+                numeroSesion: 2,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-18',
+                hora_programada: '14:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 43,
+                orden_id: 5,
+                numeroSesion: 3,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-18',
+                hora_programada: '11:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
+            },
+            {
+                id: 44,
+                orden_id: 6,
+                numeroSesion: 3,
+                fechaPrestacion: null,
+                estado: 'Pendiente',
+                profesional_id: 1,
+                fecha_programada: '2025-07-18',
+                hora_programada: '15:00',
+                fecha_real: null,
+                hora_real: null,
+                tipo_atencion: 'programada'
             }
         ]
     },
@@ -537,11 +1093,12 @@ GestorOrdenes.data = {
         if (GestorOrdenes.storage.isInitialized()) {
             console.log('Datos ya inicializados - verificando integridad...');
             
-            // Verificar si la orden ID 3 tiene los datos correctos
-            const orden3 = GestorOrdenes.storage.ordenes.getById(3);
-            const sesionesOrden3 = GestorOrdenes.storage.sesiones.getByOrden(3);
+            // Verificar si tenemos las órdenes actuales (ID 4-9 con fechas de julio 2025)
+            const orden4 = GestorOrdenes.storage.ordenes.getById(4);
+            const sesionesHoy = GestorOrdenes.storage.sesiones.getAll()
+                .filter(s => s.fecha_programada === '2025-07-16');
             
-            if (!orden3 || orden3.cantidadSesionesTotal !== 10 || sesionesOrden3.length !== 10) {
+            if (!orden4 || sesionesHoy.length < 3) {
                 console.log('Datos desactualizados detectados - ejecutando actualización forzada...');
                 this.forceUpdate();
                 return;
@@ -562,6 +1119,7 @@ GestorOrdenes.data = {
         GestorOrdenes.storage.set('ORDENES', this.ejemplos.ordenes);
         GestorOrdenes.storage.set('SESIONES', this.ejemplos.sesiones);
         GestorOrdenes.storage.set('PRESENTACIONES', []);
+        GestorOrdenes.storage.set('NOTIFICACIONES', this.notificaciones);
         
         // Marcar como inicializado
         GestorOrdenes.storage.markInitialized();
@@ -587,6 +1145,7 @@ GestorOrdenes.data = {
         GestorOrdenes.storage.set('OBRAS_SOCIALES', this.obrasSociales);
         GestorOrdenes.storage.set('PRACTICAS', this.practicas);
         GestorOrdenes.storage.set('MEDICOS_DERIVANTES', this.medicosDerivantes);
+        GestorOrdenes.storage.set('NOTIFICACIONES', this.notificaciones);
         GestorOrdenes.storage.set('PACIENTES', this.pacientes);
         GestorOrdenes.storage.set('ARANCELES', this.aranceles);
         
@@ -598,6 +1157,6 @@ GestorOrdenes.data = {
         // Marcar como inicializado
         GestorOrdenes.storage.markInitialized();
         
-        console.log('Datos actualizados forzosamente - Ana Sofía debería tener 10 sesiones realizadas');
+        console.log('Datos actualizados forzosamente - Ahora tienes citas programadas para hoy (16/7/2025)');
     }
 };

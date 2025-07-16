@@ -44,6 +44,16 @@
         </div>
 
         <div class="test-section">
+            <h3>📅 Pruebas de Programación Automática (HU-1.1)</h3>
+            <button onclick="testSchedulingBusinessDays()">Test: Días Hábiles</button>
+            <button onclick="testSchedulingMWF()">Test: Lunes-Miércoles-Viernes</button>
+            <button onclick="testSchedulingTT()">Test: Martes-Jueves</button>
+            <button onclick="testConflictDetection()">Test: Detección de Conflictos</button>
+            <button onclick="testCustomDates()">Test: Fechas Personalizadas</button>
+            <button onclick="testAllSchedulingCases()">Ejecutar Todos los Tests de Programación</button>
+        </div>
+
+        <div class="test-section">
             <h3>📈 Estadísticas</h3>
             <div id="stats"></div>
         </div>
@@ -74,15 +84,15 @@
 
         function checkSystemStatus() {
             try {
-                // Verificar módulos
-                const modules = ['storage', 'data', 'utils', 'app'];
+                // Verificar módulos incluyendo los nuevos de HU-1.3
+                const modules = ['storage', 'data', 'utils', 'app', 'capacity', 'agenda'];
                 const loadedModules = modules.filter(mod => GestorOrdenes[mod]);
                 
                 document.getElementById('systemStatus').textContent = 
                     GestorOrdenes ? 'Activo ✅' : 'Error ❌';
                 
                 document.getElementById('modulesStatus').textContent = 
-                    `${loadedModules.length}/${modules.length} cargados`;
+                    `${loadedModules.length}/${modules.length} cargados (incluye HU-1.3)`;
                 
                 // Verificar datos
                 const pacientes = GestorOrdenes.storage.pacientes.getAll();
@@ -228,6 +238,285 @@
                 
             } catch (error) {
                 log('Error al actualizar datos: ' + error.message, 'error');
+            }
+        }
+
+        // === NUEVAS FUNCIONES DE TEST PARA PROGRAMACIÓN AUTOMÁTICA ===
+        
+        function testSchedulingBusinessDays() {
+            try {
+                log('🧪 Test: Programación días hábiles...', 'info');
+                
+                const ordenData = {
+                    id: 9999, // ID temporal para testing
+                    profesional_id: 1,
+                    paciente_id: 1,
+                    obraSocial_id: 1,
+                    medicoDerivante_id: 1,
+                    practica_id: 1,
+                    fechaEmision: '2025-07-16',
+                    cantidadSesionesTotal: 5,
+                    estado: 'Abierta',
+                    fechaCierre: null,
+                    programacion_tipo: 'habiles',
+                    hora_sesiones: '14:00',
+                    fecha_primera_sesion: '2025-07-17' // Jueves
+                };
+                
+                const sesiones = GestorOrdenes.app.generateAutomaticSchedule(ordenData);
+                
+                if (sesiones.length === 5) {
+                    log(`✅ Generadas ${sesiones.length} sesiones para días hábiles`, 'success');
+                    sesiones.forEach((sesion, index) => {
+                        const fecha = new Date(sesion.fecha_programada);
+                        const dia = fecha.toLocaleDateString('es-ES', { weekday: 'long' });
+                        log(`  Sesión ${index + 1}: ${sesion.fecha_programada} (${dia}) a las ${sesion.hora_programada}`, 'info');
+                    });
+                    
+                    // Verificar que todos son días hábiles (lunes a viernes)
+                    const allBusinessDays = sesiones.every(sesion => {
+                        const fecha = new Date(sesion.fecha_programada);
+                        const dayOfWeek = fecha.getDay();
+                        return dayOfWeek >= 1 && dayOfWeek <= 5;
+                    });
+                    
+                    if (allBusinessDays) {
+                        log('✅ Todas las sesiones son en días hábiles', 'success');
+                    } else {
+                        log('❌ ERROR: Algunas sesiones no son en días hábiles', 'error');
+                    }
+                } else {
+                    log(`❌ ERROR: Se esperaban 5 sesiones, se generaron ${sesiones.length}`, 'error');
+                }
+                
+            } catch (error) {
+                log('Error en test días hábiles: ' + error.message, 'error');
+            }
+        }
+        
+        function testSchedulingMWF() {
+            try {
+                log('🧪 Test: Programación Lunes-Miércoles-Viernes...', 'info');
+                
+                const ordenData = {
+                    id: 9998,
+                    profesional_id: 1,
+                    paciente_id: 2,
+                    obraSocial_id: 2,
+                    medicoDerivante_id: 2,
+                    practica_id: 2,
+                    fechaEmision: '2025-07-16',
+                    cantidadSesionesTotal: 6,
+                    estado: 'Abierta',
+                    fechaCierre: null,
+                    programacion_tipo: 'lmv',
+                    hora_sesiones: '10:00',
+                    fecha_primera_sesion: '2025-07-21' // Lunes
+                };
+                
+                const sesiones = GestorOrdenes.app.generateAutomaticSchedule(ordenData);
+                
+                if (sesiones.length === 6) {
+                    log(`✅ Generadas ${sesiones.length} sesiones para LMV`, 'success');
+                    sesiones.forEach((sesion, index) => {
+                        const fecha = new Date(sesion.fecha_programada);
+                        const dia = fecha.toLocaleDateString('es-ES', { weekday: 'long' });
+                        log(`  Sesión ${index + 1}: ${sesion.fecha_programada} (${dia}) a las ${sesion.hora_programada}`, 'info');
+                    });
+                    
+                    // Verificar que todos son L, M, V (1, 3, 5)
+                    const allMWF = sesiones.every(sesion => {
+                        const fecha = new Date(sesion.fecha_programada);
+                        const dayOfWeek = fecha.getDay();
+                        return dayOfWeek === 1 || dayOfWeek === 3 || dayOfWeek === 5;
+                    });
+                    
+                    if (allMWF) {
+                        log('✅ Todas las sesiones son en Lunes, Miércoles o Viernes', 'success');
+                    } else {
+                        log('❌ ERROR: Algunas sesiones no están en LMV', 'error');
+                    }
+                } else {
+                    log(`❌ ERROR: Se esperaban 6 sesiones, se generaron ${sesiones.length}`, 'error');
+                }
+                
+            } catch (error) {
+                log('Error en test LMV: ' + error.message, 'error');
+            }
+        }
+        
+        function testSchedulingTT() {
+            try {
+                log('🧪 Test: Programación Martes-Jueves...', 'info');
+                
+                const ordenData = {
+                    id: 9997,
+                    profesional_id: 1,
+                    paciente_id: 3,
+                    obraSocial_id: 3,
+                    medicoDerivante_id: 3,
+                    practica_id: 3,
+                    fechaEmision: '2025-07-16',
+                    cantidadSesionesTotal: 4,
+                    estado: 'Abierta',
+                    fechaCierre: null,
+                    programacion_tipo: 'mtj',
+                    hora_sesiones: '16:00',
+                    fecha_primera_sesion: '2025-07-22' // Martes
+                };
+                
+                const sesiones = GestorOrdenes.app.generateAutomaticSchedule(ordenData);
+                
+                if (sesiones.length === 4) {
+                    log(`✅ Generadas ${sesiones.length} sesiones para MTJ`, 'success');
+                    sesiones.forEach((sesion, index) => {
+                        const fecha = new Date(sesion.fecha_programada);
+                        const dia = fecha.toLocaleDateString('es-ES', { weekday: 'long' });
+                        log(`  Sesión ${index + 1}: ${sesion.fecha_programada} (${dia}) a las ${sesion.hora_programada}`, 'info');
+                    });
+                    
+                    // Verificar que todos son M, J (2, 4)
+                    const allTT = sesiones.every(sesion => {
+                        const fecha = new Date(sesion.fecha_programada);
+                        const dayOfWeek = fecha.getDay();
+                        return dayOfWeek === 2 || dayOfWeek === 4;
+                    });
+                    
+                    if (allTT) {
+                        log('✅ Todas las sesiones son en Martes o Jueves', 'success');
+                    } else {
+                        log('❌ ERROR: Algunas sesiones no están en MTJ', 'error');
+                    }
+                } else {
+                    log(`❌ ERROR: Se esperaban 4 sesiones, se generaron ${sesiones.length}`, 'error');
+                }
+                
+            } catch (error) {
+                log('Error en test MTJ: ' + error.message, 'error');
+            }
+        }
+        
+        function testConflictDetection() {
+            try {
+                log('🧪 Test: Detección de conflictos...', 'info');
+                
+                // Crear sesiones que deliberadamente tienen conflictos
+                const sesionExistente = {
+                    id: 1000,
+                    orden_id: 1,
+                    numeroSesion: 1,
+                    fecha_programada: '2025-07-17',
+                    hora_programada: '14:00'
+                };
+                
+                // Guardar la sesión existente temporalmente
+                GestorOrdenes.storage.sesiones.save(sesionExistente);
+                
+                const nuevasSesiones = [
+                    {
+                        orden_id: 2,
+                        numeroSesion: 1,
+                        fecha_programada: '2025-07-17',
+                        hora_programada: '14:00' // CONFLICTO
+                    },
+                    {
+                        orden_id: 2,
+                        numeroSesion: 2,
+                        fecha_programada: '2025-07-18',
+                        hora_programada: '10:00' // SIN CONFLICTO
+                    }
+                ];
+                
+                const conflicts = GestorOrdenes.app.checkScheduleConflicts(nuevasSesiones);
+                
+                if (conflicts.length === 1) {
+                    log(`✅ Detectado ${conflicts.length} conflicto correctamente`, 'success');
+                    log(`  Conflicto en: ${conflicts[0].conflictDate} a las ${conflicts[0].conflictTime}`, 'info');
+                } else {
+                    log(`❌ ERROR: Se esperaba 1 conflicto, se detectaron ${conflicts.length}`, 'error');
+                }
+                
+                // Limpiar la sesión temporal
+                const allSessions = GestorOrdenes.storage.sesiones.getAll();
+                const filtered = allSessions.filter(s => s.id !== 1000);
+                GestorOrdenes.storage.set('SESIONES', filtered);
+                
+            } catch (error) {
+                log('Error en test de conflictos: ' + error.message, 'error');
+            }
+        }
+        
+        function testAllSchedulingCases() {
+            log('🚀 Ejecutando todos los tests de programación automática...', 'info');
+            
+            setTimeout(() => testSchedulingBusinessDays(), 100);
+            setTimeout(() => testSchedulingMWF(), 500);
+            setTimeout(() => testSchedulingTT(), 900);
+            setTimeout(() => testConflictDetection(), 1300);
+            setTimeout(() => testCustomDates(), 1700);
+            setTimeout(() => {
+                log('✅ Tests de programación automática completados', 'success');
+            }, 2100);
+        }
+        
+        function testCustomDates() {
+            try {
+                log('🧪 Test: Fechas Personalizadas...', 'info');
+                
+                const fechasPersonalizadas = [
+                    '2025-07-18', // Viernes
+                    '2025-07-21', // Lunes  
+                    '2025-07-25', // Viernes
+                    '2025-07-28'  // Lunes
+                ];
+                
+                const sesionesCustom = fechasPersonalizadas.map((fecha, index) => ({
+                    orden_id: 9996,
+                    numeroSesion: index + 1,
+                    fecha_programada: fecha,
+                    hora_programada: '11:00',
+                    fecha_real: null,
+                    hora_real: null,
+                    estado: 'Pendiente',
+                    tipo_atencion: 'programada'
+                }));
+                
+                if (sesionesCustom.length === 4) {
+                    log(`✅ Generadas ${sesionesCustom.length} sesiones personalizadas`, 'success');
+                    sesionesCustom.forEach((sesion, index) => {
+                        const fecha = new Date(sesion.fecha_programada);
+                        const dia = fecha.toLocaleDateString('es-ES', { weekday: 'long' });
+                        log(`  Sesión ${index + 1}: ${sesion.fecha_programada} (${dia}) a las ${sesion.hora_programada}`, 'info');
+                    });
+                    
+                    // Verificar que las fechas están en orden cronológico
+                    const ordenCorrectoFechas = sesionesCustom.every((sesion, index, array) => {
+                        if (index === 0) return true;
+                        return new Date(array[index - 1].fecha_programada) < new Date(sesion.fecha_programada);
+                    });
+                    
+                    if (ordenCorrectoFechas) {
+                        log('✅ Las fechas personalizadas están en orden cronológico correcto', 'success');
+                    } else {
+                        log('❌ ERROR: Las fechas personalizadas no están ordenadas correctamente', 'error');
+                    }
+                    
+                    // Test validación de fechas duplicadas
+                    const fechaDuplicada = '2025-07-18';
+                    const tieneDuplicados = fechasPersonalizadas.filter(f => f === fechaDuplicada).length > 1;
+                    
+                    if (!tieneDuplicados) {
+                        log('✅ Validación: No se detectaron fechas duplicadas', 'success');
+                    } else {
+                        log('❌ ERROR: Se detectaron fechas duplicadas', 'error');
+                    }
+                    
+                } else {
+                    log(`❌ ERROR: Se esperaban 4 sesiones personalizadas, se generaron ${sesionesCustom.length}`, 'error');
+                }
+                
+            } catch (error) {
+                log('Error en test de fechas personalizadas: ' + error.message, 'error');
             }
         }
 

@@ -18,6 +18,9 @@
                 <a class="nav-link active" href="ordenes.html">
                     <i class="bi bi-file-earmark-medical"></i> Órdenes
                 </a>
+                <a class="nav-link" href="agenda.html">
+                    <i class="bi bi-calendar3"></i> Agenda
+                </a>
                 <a class="nav-link" href="checkin.html">
                     <i class="bi bi-check-circle"></i> Check-in
                 </a>
@@ -49,7 +52,7 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="form-label">Estado</label>
                                 <select class="form-select" id="filtroEstado">
                                     <option value="">Todos</option>
@@ -58,7 +61,16 @@
                                     <option value="Cerrada Manual">Cerrada Manual</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
+                                <label class="form-label">Estado de Programación</label>
+                                <select class="form-select" id="filtroEstadoProgramacion">
+                                    <option value="">Todos</option>
+                                    <option value="sin_programar">🔴 Sin Programar</option>
+                                    <option value="conflictos">⚠️ Con Conflictos</option>
+                                    <option value="programada">✅ Programada</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
                                 <label class="form-label">Paciente</label>
                                 <input type="text" class="form-control" id="filtroPaciente" placeholder="Buscar paciente...">
                             </div>
@@ -89,8 +101,11 @@
                                     <button class="btn btn-secondary me-2" id="limpiarFiltros">
                                         <i class="bi bi-x-circle"></i> Limpiar
                                     </button>
-                                    <button class="btn btn-primary" id="aplicarFiltros">
+                                    <button class="btn btn-primary me-2" id="aplicarFiltros">
                                         <i class="bi bi-search"></i> Aplicar
+                                    </button>
+                                    <button class="btn btn-warning" id="programarPendientes">
+                                        <i class="bi bi-calendar-plus"></i> Programar Pendientes
                                     </button>
                                 </div>
                             </div>
@@ -112,6 +127,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
+                                        <th>Estado</th>
                                         <th>ID</th>
                                         <th>Paciente</th>
                                         <th>DNI</th>
@@ -119,7 +135,6 @@
                                         <th>Práctica</th>
                                         <th>Fecha Emisión</th>
                                         <th>Progreso</th>
-                                        <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -185,6 +200,63 @@
                             <div class="col-md-6">
                                 <label class="form-label">Cantidad de Sesiones *</label>
                                 <input type="number" class="form-control" name="cantidadSesionesTotal" min="1" max="50" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Sección de Programación de Sesiones -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h6 class="border-bottom pb-2 mb-3">
+                                    <i class="bi bi-calendar3"></i> Programación de Sesiones
+                                </h6>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Tipo de Programación *</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="programacion_tipo" id="prog_habiles" value="habiles" checked>
+                                    <label class="form-check-label" for="prog_habiles">
+                                        Días Hábiles (Lun - Vie)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="programacion_tipo" id="prog_lmv" value="lmv">
+                                    <label class="form-check-label" for="prog_lmv">
+                                        Lunes, Miércoles, Viernes
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="programacion_tipo" id="prog_mtj" value="mtj">
+                                    <label class="form-check-label" for="prog_mtj">
+                                        Martes, Jueves
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="programacion_tipo" id="prog_personalizada" value="personalizada">
+                                    <label class="form-check-label" for="prog_personalizada">
+                                        Fechas Personalizadas
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Hora de Sesiones *</label>
+                                        <input type="time" class="form-control" name="hora_sesiones" value="09:00" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Primera Sesión *</label>
+                                        <input type="date" class="form-control" name="fecha_primera_sesion" required>
+                                    </div>
+                                </div>
+                                <div class="mt-3" id="personalizada_warning" style="display: none;">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle"></i>
+                                        Al seleccionar "Fechas Personalizadas", podrá elegir las fechas específicas después de crear la orden.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -257,6 +329,66 @@
         </div>
     </div>
 
+    <!-- Modal Fechas Personalizadas -->
+    <div class="modal fade" id="fechasPersonalizadasModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-calendar3"></i> Seleccionar Fechas Personalizadas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        Seleccione las fechas específicas para cada sesión. La hora configurada se aplicará a todas las sesiones.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Cantidad de Sesiones: <span id="totalSesionesCustom">0</span></label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Hora de Sesiones</label>
+                                <input type="time" class="form-control" id="horaPersonalizada" value="09:00" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="border-bottom pb-2">Seleccionar Fechas</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="fechaSesionCustom">
+                            </div>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="agregarFechaPersonalizada()">
+                                <i class="bi bi-plus"></i> Agregar Fecha
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="border-bottom pb-2">Fechas Seleccionadas</h6>
+                            <div id="fechasSeleccionadas" class="list-group" style="max-height: 300px; overflow-y: auto;">
+                                <!-- Se llenan dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="alert alert-warning" id="warningFaltanFechas" style="display: none;">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Debe seleccionar <span id="faltanCuantas">0</span> fecha(s) más.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmarFechasPersonalizadas" disabled>
+                        <i class="bi bi-check"></i> Confirmar Fechas
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/data.js"></script>
@@ -315,6 +447,11 @@
                 
                 // Establecer fecha actual
                 document.querySelector('[name="fechaEmision"]').value = GestorOrdenes.utils.getCurrentDate();
+                
+                // Establecer fecha de primera sesión por defecto (mañana)
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                document.querySelector('[name="fecha_primera_sesion"]').value = tomorrow.toISOString().split('T')[0];
             },
 
             loadPacientes: function() {
@@ -402,9 +539,25 @@
                 const practica = GestorOrdenes.storage.practicas.getById(orden.practica_id);
                 const progreso = GestorOrdenes.utils.getSessionProgress(orden.id);
                 
+                // Calcular estado de programación
+                const estadoProgramacion = this.getOrderSchedulingStatus(orden);
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${orden.id}</td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="order-status-icon ${estadoProgramacion.class}" title="${estadoProgramacion.descripcion}"></span>
+                            ${estadoProgramacion.icono}
+                        </div>
+                    </td>
+                    <td>
+                        ${orden.id}
+                        ${estadoProgramacion.tipo === 'sin_programar' ? 
+                            `<button class="btn btn-sm btn-outline-danger ms-1" onclick="OrdenesPage.quickSchedule(${orden.id})" title="Programar ahora">
+                                <i class="bi bi-calendar-plus"></i>
+                            </button>` : ''
+                        }
+                    </td>
                     <td>${paciente ? paciente.nombreCompleto : 'N/A'}</td>
                     <td>${paciente ? paciente.dni : 'N/A'}</td>
                     <td>${obraSocial ? obraSocial.nombre : 'N/A'}</td>
@@ -420,7 +573,6 @@
                         </div>
                         <small class="text-muted">${progreso.porcentaje}%</small>
                     </td>
-                    <td><span class="badge estado-${orden.estado.toLowerCase().replace(' ', '-')}">${orden.estado}</span></td>
                     <td>
                         <div class="btn-group" role="group">
                             <button class="btn btn-sm btn-primary" onclick="OrdenesPage.viewOrder(${orden.id})" title="Ver detalle">
@@ -436,6 +588,50 @@
                 `;
                 
                 return row;
+            },
+            
+            // Determinar estado de programación de una orden
+            getOrderSchedulingStatus: function(orden) {
+                const sesiones = GestorOrdenes.storage.sesiones.getByOrden(orden.id);
+                const sesionesSinProgramar = sesiones.filter(s => s.estado === 'Pendiente' && !s.fecha_programada);
+                const sesionesConFecha = sesiones.filter(s => s.fecha_programada && s.hora_programada);
+                
+                // Verificar conflictos para sesiones programadas
+                let tieneConflictos = false;
+                if (sesionesConFecha.length > 0) {
+                    const conflicts = GestorOrdenes.app.checkScheduleConflicts(sesionesConFecha);
+                    tieneConflictos = conflicts.length > 0;
+                }
+                
+                if (sesionesSinProgramar.length > 0) {
+                    return {
+                        tipo: 'sin_programar',
+                        icono: '🔴',
+                        class: 'status-sin-programar',
+                        descripcion: `${sesionesSinProgramar.length} sesión(es) sin programar`
+                    };
+                } else if (tieneConflictos) {
+                    return {
+                        tipo: 'conflictos',
+                        icono: '⚠️',
+                        class: 'status-conflicto',
+                        descripcion: 'Conflictos de horario detectados'
+                    };
+                } else if (sesionesConFecha.length > 0) {
+                    return {
+                        tipo: 'programada',
+                        icono: '✅',
+                        class: 'status-programada',
+                        descripcion: 'Todas las sesiones programadas'
+                    };
+                } else {
+                    return {
+                        tipo: 'parcial',
+                        icono: '🟡',
+                        class: 'status-parcial',
+                        descripcion: 'Programación parcial'
+                    };
+                }
             },
 
             setupEventListeners: function() {
@@ -454,11 +650,40 @@
                     e.preventDefault();
                     this.handlePacienteSubmit(e.target);
                 });
+                
+                // Formulario de orden
+                document.getElementById('ordenForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleOrdenSubmit(e.target);
+                });
+                
+                // Radio buttons de programación
+                document.querySelectorAll('[name="programacion_tipo"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        this.handleProgramacionChange(e.target.value);
+                    });
+                });
+                
+                // Validación de fecha de primera sesión
+                document.querySelector('[name="fecha_primera_sesion"]').addEventListener('change', (e) => {
+                    this.validateFechaPrimeraSesion(e.target.value);
+                });
+                
+                // Event listener para confirmar fechas personalizadas
+                document.getElementById('confirmarFechasPersonalizadas').addEventListener('click', () => {
+                    this.confirmarFechasPersonalizadas();
+                });
+                
+                // Botón de programar pendientes
+                document.getElementById('programarPendientes').addEventListener('click', () => {
+                    this.programarOrdenesPendientes();
+                });
             },
 
             applyFilters: function(ordenes) {
                 const filters = {
                     estado: document.getElementById('filtroEstado').value,
+                    estadoProgramacion: document.getElementById('filtroEstadoProgramacion').value,
                     paciente: document.getElementById('filtroPaciente').value,
                     obraSocial: parseInt(document.getElementById('filtroObraSocial').value) || null,
                     practica: parseInt(document.getElementById('filtroPractica').value) || null,
@@ -466,11 +691,23 @@
                     fechaHasta: document.getElementById('filtroFechaHasta').value
                 };
                 
-                return GestorOrdenes.utils.filterOrders(ordenes, filters);
+                // Aplicar filtro base
+                let filteredOrders = GestorOrdenes.utils.filterOrders(ordenes, filters);
+                
+                // Aplicar filtro de estado de programación
+                if (filters.estadoProgramacion) {
+                    filteredOrders = filteredOrders.filter(orden => {
+                        const estadoProgramacion = this.getOrderSchedulingStatus(orden);
+                        return estadoProgramacion.tipo === filters.estadoProgramacion;
+                    });
+                }
+                
+                return filteredOrders;
             },
 
             clearFilters: function() {
                 document.getElementById('filtroEstado').value = '';
+                document.getElementById('filtroEstadoProgramacion').value = '';
                 document.getElementById('filtroPaciente').value = '';
                 document.getElementById('filtroObraSocial').value = '';
                 document.getElementById('filtroPractica').value = '';
@@ -596,6 +833,131 @@
                 modal.show();
             },
 
+            handleProgramacionChange: function(tipo) {
+                const warning = document.getElementById('personalizada_warning');
+                if (tipo === 'personalizada') {
+                    warning.style.display = 'block';
+                } else {
+                    warning.style.display = 'none';
+                }
+            },
+            
+            validateFechaPrimeraSesion: function(fecha) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const selectedDate = new Date(fecha);
+                selectedDate.setHours(0, 0, 0, 0);
+                
+                if (selectedDate < today) {
+                    GestorOrdenes.utils.showNotification('La fecha de primera sesión no puede ser anterior a hoy', 'warning');
+                    // Establecer fecha mínima a mañana
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    document.querySelector('[name="fecha_primera_sesion"]').value = tomorrow.toISOString().split('T')[0];
+                    return false;
+                }
+                return true;
+            },
+            
+            validateOrdenData: function(formData) {
+                // Validaciones básicas
+                if (!formData.get('paciente_id')) {
+                    GestorOrdenes.utils.showNotification('Debe seleccionar un paciente', 'warning');
+                    return false;
+                }
+                
+                if (!formData.get('obraSocial_id')) {
+                    GestorOrdenes.utils.showNotification('Debe seleccionar una obra social', 'warning');
+                    return false;
+                }
+                
+                if (!formData.get('practica_id')) {
+                    GestorOrdenes.utils.showNotification('Debe seleccionar una práctica', 'warning');
+                    return false;
+                }
+                
+                // Validar formato de hora
+                const horaSesiones = formData.get('hora_sesiones');
+                if (!horaSesiones || !/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(horaSesiones)) {
+                    GestorOrdenes.utils.showNotification('Formato de hora inválido (HH:MM)', 'warning');
+                    return false;
+                }
+                
+                // Validar fecha de primera sesión
+                const fechaPrimeraSesion = formData.get('fecha_primera_sesion');
+                if (!this.validateFechaPrimeraSesion(fechaPrimeraSesion)) {
+                    return false;
+                }
+                
+                return true;
+            },
+            
+            handleOrdenSubmit: async function(form) {
+                try {
+                    const formData = new FormData(form);
+                    
+                    // Validar datos
+                    if (!this.validateOrdenData(formData)) {
+                        return;
+                    }
+                    
+                    const ordenData = {
+                        profesional_id: 1, // Hardcoded for POC
+                        paciente_id: parseInt(formData.get('paciente_id')),
+                        obraSocial_id: parseInt(formData.get('obraSocial_id')),
+                        medicoDerivante_id: formData.get('medicoDerivante_id') ? parseInt(formData.get('medicoDerivante_id')) : null,
+                        practica_id: parseInt(formData.get('practica_id')),
+                        fechaEmision: formData.get('fechaEmision'),
+                        cantidadSesionesTotal: parseInt(formData.get('cantidadSesionesTotal')),
+                        estado: 'Abierta',
+                        fechaCierre: null,
+                        // Campos de programación
+                        programacion_tipo: formData.get('programacion_tipo'),
+                        hora_sesiones: formData.get('hora_sesiones'),
+                        fecha_primera_sesion: formData.get('fecha_primera_sesion')
+                    };
+                    
+                    console.log('Creando orden con datos:', ordenData);
+                    
+                    // Verificar si es programación personalizada
+                    if (ordenData.programacion_tipo === 'personalizada') {
+                        // Guardar datos temporalmente y abrir modal de fechas personalizadas
+                        this.tempOrdenData = ordenData;
+                        this.abrirModalFechasPersonalizadas(ordenData);
+                        return;
+                    }
+                    
+                    // Guardar orden con manejo de conflictos para otros tipos
+                    const success = await GestorOrdenes.app.createOrdenWithScheduling(ordenData, true);
+                    
+                    if (success === false) {
+                        // Usuario decidió no continuar por conflictos
+                        GestorOrdenes.utils.showNotification('Creación de orden cancelada por conflictos de horario', 'info');
+                        return;
+                    }
+                    
+                    if (!success) {
+                        throw new Error('Error al crear la orden');
+                    }
+                    
+                    // Cerrar modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaOrdenModal'));
+                    modal.hide();
+                    
+                    // Limpiar formulario
+                    form.reset();
+                    
+                    // Recargar lista
+                    this.loadOrders();
+                    
+                    GestorOrdenes.utils.showNotification('Orden creada exitosamente con programación automática', 'success');
+                    
+                } catch (error) {
+                    console.error('Error al crear orden:', error);
+                    GestorOrdenes.utils.showNotification('Error al crear la orden: ' + error.message, 'danger');
+                }
+            },
+
             closeOrder: function(ordenId) {
                 GestorOrdenes.utils.showConfirmation('¿Está seguro que desea cerrar esta orden manualmente?', () => {
                     const orden = GestorOrdenes.storage.ordenes.getById(ordenId);
@@ -607,7 +969,342 @@
                         GestorOrdenes.utils.showNotification('Orden cerrada exitosamente', 'success');
                     }
                 });
+            },
+            
+            // === FUNCIONES PARA FECHAS PERSONALIZADAS ===
+            
+            abrirModalFechasPersonalizadas: function(ordenData) {
+                // Llenar datos del modal
+                document.getElementById('totalSesionesCustom').textContent = ordenData.cantidadSesionesTotal;
+                document.getElementById('horaPersonalizada').value = ordenData.hora_sesiones;
+                
+                // Limpiar fechas seleccionadas
+                this.fechasSeleccionadasCustom = [];
+                this.actualizarFechasSeleccionadas();
+                
+                // Establecer fecha mínima (mañana)
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                document.getElementById('fechaSesionCustom').min = tomorrow.toISOString().split('T')[0];
+                
+                // Abrir modal
+                const modal = new bootstrap.Modal(document.getElementById('fechasPersonalizadasModal'));
+                modal.show();
+            },
+            
+            fechasSeleccionadasCustom: [],
+            tempOrdenData: null,
+            
+            actualizarFechasSeleccionadas: function() {
+                const container = document.getElementById('fechasSeleccionadas');
+                const totalSesiones = parseInt(document.getElementById('totalSesionesCustom').textContent);
+                const faltantes = totalSesiones - this.fechasSeleccionadasCustom.length;
+                
+                // Ordenar fechas
+                this.fechasSeleccionadasCustom.sort((a, b) => new Date(a) - new Date(b));
+                
+                // Actualizar lista visual
+                container.innerHTML = '';
+                this.fechasSeleccionadasCustom.forEach((fecha, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    item.innerHTML = `
+                        <span><strong>Sesión ${index + 1}:</strong> ${fechaFormateada}</span>
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="OrdenesPage.eliminarFechaPersonalizada('${fecha}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    `;
+                    container.appendChild(item);
+                });
+                
+                // Actualizar warning y botón
+                const warning = document.getElementById('warningFaltanFechas');
+                const btnConfirmar = document.getElementById('confirmarFechasPersonalizadas');
+                
+                if (faltantes > 0) {
+                    warning.style.display = 'block';
+                    document.getElementById('faltanCuantas').textContent = faltantes;
+                    btnConfirmar.disabled = true;
+                } else {
+                    warning.style.display = 'none';
+                    btnConfirmar.disabled = false;
+                }
+            },
+            
+            eliminarFechaPersonalizada: function(fecha) {
+                this.fechasSeleccionadasCustom = this.fechasSeleccionadasCustom.filter(f => f !== fecha);
+                this.actualizarFechasSeleccionadas();
+            },
+            
+            confirmarFechasPersonalizadas: async function() {
+                try {
+                    if (!this.tempOrdenData || this.fechasSeleccionadasCustom.length === 0) {
+                        return;
+                    }
+                    
+                    // Crear sesiones personalizadas
+                    const sesionesPersonalizadas = this.fechasSeleccionadasCustom.map((fecha, index) => ({
+                        orden_id: null, // Se asignará después
+                        numeroSesion: index + 1,
+                        fecha_programada: fecha,
+                        hora_programada: this.tempOrdenData.hora_sesiones,
+                        fecha_real: null,
+                        hora_real: null,
+                        estado: 'Pendiente',
+                        tipo_atencion: 'programada'
+                    }));
+                    
+                    // Verificar conflictos
+                    const conflicts = GestorOrdenes.app.checkScheduleConflicts(sesionesPersonalizadas);
+                    
+                    if (conflicts.length > 0) {
+                        const continuar = await new Promise((resolve) => {
+                            GestorOrdenes.app.showConflictResolutionModal(conflicts, resolve);
+                        });
+                        
+                        if (!continuar) {
+                            GestorOrdenes.utils.showNotification('Creación cancelada por conflictos de horario', 'info');
+                            return;
+                        }
+                    }
+                    
+                    // Guardar orden
+                    const success = GestorOrdenes.storage.ordenes.save(this.tempOrdenData);
+                    if (!success) {
+                        throw new Error('Error al guardar la orden');
+                    }
+                    
+                    // Asignar ID de orden a las sesiones y guardar
+                    sesionesPersonalizadas.forEach(sesion => {
+                        sesion.orden_id = this.tempOrdenData.id;
+                    });
+                    
+                    const sessionSuccess = GestorOrdenes.storage.sesiones.bulkSave(sesionesPersonalizadas);
+                    if (!sessionSuccess) {
+                        throw new Error('Error al guardar las sesiones');
+                    }
+                    
+                    // Cerrar modales
+                    const modalFechas = bootstrap.Modal.getInstance(document.getElementById('fechasPersonalizadasModal'));
+                    const modalOrden = bootstrap.Modal.getInstance(document.getElementById('nuevaOrdenModal'));
+                    modalFechas.hide();
+                    modalOrden.hide();
+                    
+                    // Limpiar
+                    this.tempOrdenData = null;
+                    this.fechasSeleccionadasCustom = [];
+                    document.getElementById('ordenForm').reset();
+                    
+                    // Recargar
+                    this.loadOrders();
+                    
+                    GestorOrdenes.utils.showNotification('Orden creada exitosamente con fechas personalizadas', 'success');
+                    
+                } catch (error) {
+                    console.error('Error al confirmar fechas personalizadas:', error);
+                    GestorOrdenes.utils.showNotification('Error al crear la orden: ' + error.message, 'danger');
+                }
+            },
+            
+            // === FUNCIONES PARA PROGRAMACIÓN RÁPIDA (HU-1.2) ===
+            
+            // Programación rápida de una orden individual
+            quickSchedule: function(ordenId) {
+                const orden = GestorOrdenes.storage.ordenes.getById(ordenId);
+                if (!orden) {
+                    GestorOrdenes.utils.showNotification('Orden no encontrada', 'error');
+                    return;
+                }
+                
+                const paciente = GestorOrdenes.storage.pacientes.getById(orden.paciente_id);
+                const mensaje = `¿Programar automáticamente las sesiones pendientes de ${paciente ? paciente.nombreCompleto : 'la orden #' + ordenId}?`;
+                
+                GestorOrdenes.utils.showConfirmation(mensaje, () => {
+                    this.programarOrdenAuto(orden);
+                });
+            },
+            
+            // Programar múltiples órdenes pendientes
+            programarOrdenesPendientes: function() {
+                const ordenes = GestorOrdenes.storage.ordenes.getActivas();
+                const ordenesSinProgramar = ordenes.filter(orden => {
+                    const estado = this.getOrderSchedulingStatus(orden);
+                    return estado.tipo === 'sin_programar';
+                });
+                
+                if (ordenesSinProgramar.length === 0) {
+                    GestorOrdenes.utils.showNotification('No hay órdenes pendientes de programar', 'info');
+                    return;
+                }
+                
+                const mensaje = `¿Programar automáticamente ${ordenesSinProgramar.length} orden(es) pendiente(s)?`;
+                GestorOrdenes.utils.showConfirmation(mensaje, () => {
+                    this.programarMultiplesOrdenes(ordenesSinProgramar);
+                });
+            },
+            
+            // Programar una orden automáticamente con configuración por defecto
+            programarOrdenAuto: function(orden) {
+                try {
+                    // Configuración por defecto para programación automática
+                    const ordenConProgramacion = {
+                        ...orden,
+                        programacion_tipo: 'habiles',
+                        hora_sesiones: '14:00',
+                        fecha_primera_sesion: this.getNextBusinessDay()
+                    };
+                    
+                    // Generar sesiones automáticamente
+                    const sesiones = GestorOrdenes.app.generateAutomaticSchedule(ordenConProgramacion);
+                    
+                    if (sesiones.length > 0) {
+                        // Verificar conflictos
+                        const conflicts = GestorOrdenes.app.checkScheduleConflicts(sesiones);
+                        
+                        if (conflicts.length > 0) {
+                            const continuar = confirm(`Se detectaron ${conflicts.length} conflicto(s) de horario. ¿Continuar de todas formas?`);
+                            if (!continuar) {
+                                return;
+                            }
+                        }
+                        
+                        // Guardar sesiones
+                        const success = GestorOrdenes.storage.sesiones.bulkSave(sesiones);
+                        if (success) {
+                            GestorOrdenes.utils.showNotification('Orden programada exitosamente', 'success');
+                            this.loadOrders();
+                        } else {
+                            throw new Error('Error al guardar las sesiones');
+                        }
+                    } else {
+                        throw new Error('No se pudieron generar sesiones');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error en programación automática:', error);
+                    GestorOrdenes.utils.showNotification('Error al programar la orden: ' + error.message, 'danger');
+                }
+            },
+            
+            // Programar múltiples órdenes en lote
+            programarMultiplesOrdenes: function(ordenes) {
+                let exitosas = 0;
+                let errores = 0;
+                
+                ordenes.forEach((orden, index) => {
+                    try {
+                        // Escalonar horarios para evitar conflictos
+                        const hora = this.calculateStaggeredTime('14:00', index);
+                        const fechaInicio = this.getNextBusinessDay(index);
+                        
+                        const ordenConProgramacion = {
+                            ...orden,
+                            programacion_tipo: 'habiles',
+                            hora_sesiones: hora,
+                            fecha_primera_sesion: fechaInicio
+                        };
+                        
+                        const sesiones = GestorOrdenes.app.generateAutomaticSchedule(ordenConProgramacion);
+                        
+                        if (sesiones.length > 0) {
+                            const success = GestorOrdenes.storage.sesiones.bulkSave(sesiones);
+                            if (success) {
+                                exitosas++;
+                            } else {
+                                errores++;
+                            }
+                        } else {
+                            errores++;
+                        }
+                        
+                    } catch (error) {
+                        console.error(`Error al programar orden ${orden.id}:`, error);
+                        errores++;
+                    }
+                });
+                
+                // Mostrar resultado
+                if (exitosas > 0) {
+                    GestorOrdenes.utils.showNotification(`${exitosas} orden(es) programada(s) exitosamente`, 'success');
+                }
+                if (errores > 0) {
+                    GestorOrdenes.utils.showNotification(`${errores} orden(es) con errores`, 'warning');
+                }
+                
+                this.loadOrders();
+            },
+            
+            // Obtener siguiente día hábil
+            getNextBusinessDay: function(dayOffset = 0) {
+                const date = new Date();
+                date.setDate(date.getDate() + 1 + dayOffset); // Empezar desde mañana
+                
+                // Si cae en fin de semana, mover al lunes
+                while (date.getDay() === 0 || date.getDay() === 6) {
+                    date.setDate(date.getDate() + 1);
+                }
+                
+                return date.toISOString().split('T')[0];
+            },
+            
+            // Calcular horario escalonado para evitar conflictos
+            calculateStaggeredTime: function(baseTime, index) {
+                const [hours, minutes] = baseTime.split(':').map(Number);
+                const totalMinutes = hours * 60 + minutes + (index * 60); // 1 hora de diferencia
+                
+                const newHours = Math.floor(totalMinutes / 60) % 24;
+                const newMinutes = totalMinutes % 60;
+                
+                return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
             }
+        };
+        
+        // Función global para agregar fecha personalizada
+        window.agregarFechaPersonalizada = function() {
+            const fechaInput = document.getElementById('fechaSesionCustom');
+            const fecha = fechaInput.value;
+            
+            if (!fecha) {
+                GestorOrdenes.utils.showNotification('Debe seleccionar una fecha', 'warning');
+                return;
+            }
+            
+            // Verificar que no sea fecha pasada
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const selectedDate = new Date(fecha);
+            selectedDate.setHours(0, 0, 0, 0);
+            
+            if (selectedDate <= today) {
+                GestorOrdenes.utils.showNotification('La fecha debe ser posterior a hoy', 'warning');
+                return;
+            }
+            
+            // Verificar que no esté duplicada
+            if (OrdenesPage.fechasSeleccionadasCustom.includes(fecha)) {
+                GestorOrdenes.utils.showNotification('Esta fecha ya fue seleccionada', 'warning');
+                return;
+            }
+            
+            // Verificar que no exceda el límite
+            const totalSesiones = parseInt(document.getElementById('totalSesionesCustom').textContent);
+            if (OrdenesPage.fechasSeleccionadasCustom.length >= totalSesiones) {
+                GestorOrdenes.utils.showNotification('Ya se alcanzó el número máximo de sesiones', 'warning');
+                return;
+            }
+            
+            // Agregar fecha
+            OrdenesPage.fechasSeleccionadasCustom.push(fecha);
+            OrdenesPage.actualizarFechasSeleccionadas();
+            
+            // Limpiar input
+            fechaInput.value = '';
         };
     </script>
 </body>

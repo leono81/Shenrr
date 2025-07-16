@@ -1,0 +1,377 @@
+/* Estilos específicos para la página de agenda */
+
+/* Grid de agenda */
+.agenda-grid {
+    display: grid;
+    gap: 1px;
+    background-color: #dee2e6;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Vista diaria */
+.agenda-grid.daily {
+    grid-template-columns: 80px 1fr;
+    grid-template-rows: auto repeat(12, 60px);
+}
+
+/* Vista semanal */
+.agenda-grid.weekly {
+    grid-template-columns: 80px repeat(7, 1fr);
+    grid-template-rows: auto repeat(12, 60px);
+}
+
+/* Headers de la agenda */
+.agenda-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.agenda-header.time-header {
+    background-color: #6c757d;
+}
+
+/* Slots de tiempo */
+.time-slot {
+    background-color: #6c757d;
+    color: white;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* Celdas de agenda */
+.agenda-cell {
+    background-color: white;
+    border: none;
+    padding: 0.25rem;
+    position: relative;
+    min-height: 60px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.agenda-cell:hover {
+    background-color: #f8f9fa;
+    box-shadow: inset 0 0 0 2px var(--primary-color);
+}
+
+/* Indicadores de capacidad */
+.capacity-indicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.capacity-free {
+    background-color: #dee2e6;
+}
+
+.capacity-low {
+    background-color: #28a745;
+}
+
+.capacity-medium {
+    background-color: #ffc107;
+}
+
+.capacity-high {
+    background-color: #dc3545;
+}
+
+/* Estados de celda por capacidad */
+.agenda-cell.capacity-free {
+    background-color: #f8f9fa;
+}
+
+.agenda-cell.capacity-low {
+    background-color: #d4edda;
+    border-left: 3px solid #28a745;
+}
+
+.agenda-cell.capacity-medium {
+    background-color: #fff3cd;
+    border-left: 3px solid #ffc107;
+}
+
+.agenda-cell.capacity-high {
+    background-color: #f8d7da;
+    border-left: 3px solid #dc3545;
+}
+
+/* Contenido de celdas */
+.agenda-cell-content {
+    font-size: 0.75rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.capacity-count {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.patient-preview {
+    color: #6c757d;
+    font-size: 0.7rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Tooltips personalizados */
+.agenda-tooltip {
+    position: absolute;
+    background-color: #212529;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
+}
+
+.agenda-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #212529;
+}
+
+.tooltip-patient {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #495057;
+}
+
+.tooltip-patient:last-child {
+    border-bottom: none;
+}
+
+.tooltip-patient-name {
+    font-weight: bold;
+    color: #fff;
+}
+
+.tooltip-patient-practice {
+    font-size: 0.8rem;
+    color: #adb5bd;
+}
+
+.tooltip-patient-status {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* Estados en tooltip */
+.status-pendiente {
+    color: #ffc107;
+}
+
+.status-realizada {
+    color: #28a745;
+}
+
+.status-ausente {
+    color: #dc3545;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .agenda-grid.weekly {
+        grid-template-columns: 60px repeat(7, 1fr);
+    }
+    
+    .agenda-grid.daily {
+        grid-template-columns: 60px 1fr;
+    }
+    
+    .time-slot {
+        font-size: 0.75rem;
+        padding: 0.25rem;
+    }
+    
+    .agenda-header {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .agenda-cell {
+        min-height: 50px;
+    }
+    
+    .agenda-cell-content {
+        font-size: 0.7rem;
+    }
+    
+    .patient-preview {
+        font-size: 0.6rem;
+    }
+}
+
+/* Animaciones */
+@keyframes capacity-alert {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(220, 53, 69, 0.2); }
+    100% { background-color: transparent; }
+}
+
+.agenda-cell.capacity-alert {
+    animation: capacity-alert 1s ease-in-out;
+}
+
+/* Estados especiales */
+.agenda-cell.past-time {
+    opacity: 0.6;
+    background-color: #f1f3f4;
+}
+
+.agenda-cell.current-time {
+    box-shadow: inset 0 0 0 2px #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* Vista de navegación de fechas */
+.date-navigation {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* Controles de vista */
+.view-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-check:checked + .btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Loading state */
+.agenda-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #6c757d;
+}
+
+.agenda-loading .spinner-border {
+    margin-right: 0.5rem;
+}
+
+/* Estados de error */
+.agenda-error {
+    text-align: center;
+    padding: 2rem;
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.agenda-error i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Quick actions en modal */
+.quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.quick-actions .btn {
+    flex: 1;
+}
+
+/* Capacidad en modal */
+.capacity-info {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.capacity-info h6 {
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.capacity-info .capacity-indicator {
+    margin-right: 0.5rem;
+}
+
+/* Sugerencias de horarios alternativos */
+.alternative-times {
+    margin-top: 1rem;
+}
+
+.alternative-times h6 {
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+}
+
+.time-suggestion {
+    display: inline-block;
+    margin: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.time-suggestion:hover {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.time-suggestion.selected {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+/* Print styles */
+@media print {
+    .agenda-grid {
+        page-break-inside: avoid;
+    }
+    
+    .agenda-cell {
+        border: 1px solid #000;
+    }
+    
+    .no-print {
+        display: none;
+    }
+}
